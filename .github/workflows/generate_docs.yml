@@ -41,7 +41,7 @@ jobs:
       - name: Check Copilot Version
         run: gh copilot --version
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
+          GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
 
       # 4.1 (Opcional) Validando acceso a copilot
       - name: Validate Copilot Access
@@ -50,7 +50,7 @@ jobs:
           gh copilot -p "status"
           gh copilot --version
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
+          GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
     
       # 5. GENERACIÓN CON IA (Sintaxis simplificada definitiva)
       - name: Generate AI Content
@@ -60,7 +60,7 @@ jobs:
           gh copilot -p "Analiza los archivos en ./source-code/src/main/java y genera una referencia de API en Markdown para Docusaurus con Frontmatter (id: api, title: Endpoints). Responde solo con el Markdown." > ./docs-repo/docs/api.md
 
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
+          GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
 
       # 6. Guardar los archivos generados en el repositorio (Persistencia)
       - name: Commit and Push AI Docs
