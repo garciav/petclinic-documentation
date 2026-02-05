@@ -47,7 +47,7 @@ jobs:
       - name: Validate Copilot Access
         run: |
           gh auth status
-          gh copilot status
+          gh copilot -p "status"
           gh copilot --version
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
