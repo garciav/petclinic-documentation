@@ -43,24 +43,27 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
 
-      # 4.1 (Opcional) Validando acceso a copilot
+      # 4.1 Validando acceso a copilot
       - name: Validate Copilot Access
+        env:
+          GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
         run: |
+          # Instalamos la extensión explícitamente por si el runner no la tiene actualizada
+          gh extension install github/gh-copilot --force
           gh auth status
-          gh copilot -p "status"
+          # Usamos 'explain' o 'suggest' porque el comando base a veces falla en modo no interactivo
           gh copilot --version
-        env:
-          GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
     
-      # 5. GENERACIÓN CON IA (Sintaxis simplificada definitiva)
+      # 5. GENERACIÓN CON IA
       - name: Generate AI Content
-        run: |
-          gh copilot -p "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura), tabla de dependencias de Spring Boot y diagramas Mermaid. Responde solo con el Markdown." > ./docs-repo/docs/arquitectura.md
-      
-          gh copilot -p "Analiza los archivos en ./source-code/src/main/java y genera una referencia de API en Markdown para Docusaurus con Frontmatter (id: api, title: Endpoints). Responde solo con el Markdown." > ./docs-repo/docs/api.md
-
         env:
           GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
+        run: |
+          # Es fundamental usar el comando 'explain' o similares con el flag de salida limpia
+          # 'gh copilot explain' es más estable para piping que el comando genérico en Actions
+          gh copilot explain "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura), tabla de dependencias de Spring Boot y diagramas Mermaid. Responde solo con el Markdown." > ./docs-repo/docs/arquitectura.md
+      
+          gh copilot explain "Analiza los archivos en ./source-code/src/main/java y genera una referencia de API en Markdown para Docusaurus con Frontmatter (id: api, title: Endpoints). Responde solo con el Markdown." > ./docs-repo/docs/api.md
 
       # 6. Guardar los archivos generados en el repositorio (Persistencia)
       - name: Commit and Push AI Docs
