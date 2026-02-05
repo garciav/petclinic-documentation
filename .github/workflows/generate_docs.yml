@@ -37,19 +37,17 @@ jobs:
           cache: 'npm'
           cache-dependency-path: docs-repo/package-lock.json
 
-      # 4. Instalación de GitHub Copilot Extension (Versión 2026)
-      - name: Install GitHub Copilot Extension
-        run: |
-          # Instalamos la extensión de Copilot en el GitHub CLI que ya viene en el runner
-          gh extension install github/gh-copilot
+# 4. (Opcional) Verificar la versión de Copilot integrada
+      - name: Check Copilot Version
+        run: gh copilot --version
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
 
-      # 5. GENERACIÓN CON IA (Usando gh copilot)
+      # 5. GENERACIÓN CON IA (Usando el comando nativo gh copilot)
       - name: Generate AI Content
         run: |
           # Usamos 'gh copilot explain' para analizar el código
-          # El comando redirige la salida al archivo .md de Docusaurus
+          # Asegúrate de usar el flag --type shell o el que corresponda a tu versión
           
           gh copilot explain "./source-code" \
             --prompt "Actúa como Arquitecto Senior. Genera un archivo Markdown para Docusaurus con Frontmatter (id: arquitectura, title: Arquitectura). Analiza el stack de Spring Boot y genera diagramas Mermaid." \
