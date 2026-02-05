@@ -2,8 +2,8 @@ name: AI Documentation Engine
 
 on:
   repository_dispatch:
-    types: [code_updated]
-  workflow_dispatch:
+    types: [code_updated] # Se activa cuando el Repo 1 envía la señal
+  workflow_dispatch:      # Permite ejecutarlo manualmente para pruebas
 
 permissions:
   contents: write
@@ -13,15 +13,15 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-      # 1. Checkout del repo de Docs
+      # 1. Bajamos el código de este repositorio (Docs)
       - name: Checkout Docs Repo
         uses: actions/checkout@v4
         with:
           path: docs-repo
 
-      # 2. Checkout del repo del Microservicio
+      # 2. Bajamos el código del Microservicio (Repo 1)
+      # Usamos el PAT que guardaste en los Secrets
       - name: Checkout Microservice Repo
         uses: actions/checkout@v4
         with:
@@ -29,7 +29,7 @@ jobs:
           token: ${{ secrets.PAT_FOR_DOCS }}
           path: source-code
 
-      # 3. Setup Node.js (Docusaurus)
+      # 3. Setup de Node.js para Docusaurus
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -37,57 +37,39 @@ jobs:
           cache: 'npm'
           cache-dependency-path: docs-repo/package-lock.json
 
-      # 4. Verificar autenticación de GitHub CLI
-      - name: Check GitHub Auth
-        run: gh auth status
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
-
-      # 5. Instalar GitHub Copilot CLI
-      - name: Install GitHub Copilot CLI
-        run: gh extension install github/gh-copilot
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
-
-      # 6. Verificar Copilot
+      # 4. (Opcional) Verificar la versión de Copilot integrada
       - name: Check Copilot Version
         run: gh copilot --version
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
 
-      # 7. Generar documentación con IA
+      # 5. GENERACIÓN CON IA (Sintaxis simplificada definitiva)
       - name: Generate AI Content
         run: |
-          mkdir -p docs-repo/docs
+          gh copilot -p "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura), tabla de dependencias de Spring Boot y diagramas Mermaid. Responde solo con el Markdown." > ./docs-repo/docs/arquitectura.md
+      
+          gh copilot -p "Analiza los archivos en ./source-code/src/main/java y genera una referencia de API en Markdown para Docusaurus con Frontmatter (id: api, title: Endpoints). Responde solo con el Markdown." > ./docs-repo/docs/api.md
 
-          gh copilot -p "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura), tabla de dependencias de Spring Boot y diagramas Mermaid. Responde solo con el Markdown." \
-            > ./docs-repo/docs/arquitectura.md \
-            || echo "<!-- Copilot failed generating arquitectura.md -->" > ./docs-repo/docs/arquitectura.md
-
-          gh copilot -p "Analiza los archivos en ./source-code/src/main/java y genera una referencia de API en Markdown para Docusaurus con Frontmatter (id: api, title: Endpoints). Responde solo con el Markdown." \
-            > ./docs-repo/docs/api.md \
-            || echo "<!-- Copilot failed generating api.md -->" > ./docs-repo/docs/api.md
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
 
-      # 8. Commit y push de la documentación generada
+      # 6. Guardar los archivos generados en el repositorio (Persistencia)
       - name: Commit and Push AI Docs
         run: |
           cd docs-repo
           git config user.name "GitHub Action Bot"
           git config user.email "actions@github.com"
           git add docs/*.md
-          git diff --quiet && git diff --staged --quiet || \
-            (git commit -m "docs: auto-update by Copilot from SHA ${{ github.event.client_payload.sha }}" && git push)
+          # Solo hace commit si hay cambios reales
+          git diff --quiet && git diff --staged --quiet || (git commit -m "docs: auto-update by Copilot from SHA ${{ github.event.client_payload.sha }}" && git push)
 
-      # 9. Build del sitio Docusaurus
+      # 7. Construcción del sitio estático (Docusaurus Build)
       - name: Build Docusaurus
         run: |
           cd docs-repo
-          npm install
           npm run build
 
-      # 10. Deploy a GitHub Pages
+      # 8. Despliegue a GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
