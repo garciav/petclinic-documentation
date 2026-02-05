@@ -13,6 +13,11 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    # DEFINIMOS EL TOKEN AQUÍ PARA TODO EL TRABAJO
+    env:
+      COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
+      GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
+      
     steps:
       - name: Checkout Docs Repo
         uses: actions/checkout@v4
@@ -33,35 +38,24 @@ jobs:
           cache: 'npm'
           cache-dependency-path: docs-repo/package-lock.json
 
-      # 4. INSTALACIÓN LIMPIA DEL CLI (Aquí está la clave)
+      # 4. Instalación del CLI
       - name: Install Copilot CLI
         run: |
-          # Instalamos el paquete global que acepta el flag -p
           npm install -g @github/copilot
-          # Verificamos que el comando 'copilot' responda
-          copilot --version
+          # Esto nos dirá si el token está presente (debería imprimir '81' o similar, no el token)
+          echo "Longitud del token: ${#COPILOT_GITHUB_TOKEN}"
 
-      # 5. GENERACIÓN CON IA (Priorizando COPILOT_GITHUB_TOKEN)
+      # 5. Generación de Contenido (Simplificado)
       - name: Generate AI Content
-        env:
-          # Usamos las tres variables para no dejar margen de error
-          COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
-          GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
-          GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
         run: |
           mkdir -p ./docs-repo/docs
           
-          # Validación rápida: Si el token está vacío, fallará aquí con un mensaje claro
-          if [ -z "$COPILOT_GITHUB_TOKEN" ]; then
-            echo "Error: El secreto PAT_FOR_DOCS está vacío o no se encuentra."
-            exit 1
-          fi
-
           echo "Generando arquitectura.md..."
-          copilot -p "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura), tabla de dependencias y diagramas Mermaid. Responde solo con el código Markdown puro." > ./docs-repo/docs/arquitectura.md
+          # Usamos --prompt que es más explícito
+          copilot --prompt "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura). Responde solo con el código Markdown puro." > ./docs-repo/docs/arquitectura.md
       
           echo "Generando api.md..."
-          copilot -p "Analiza ./source-code/src/main/java y genera referencia de API para Docusaurus (id: api, title: Endpoints). Responde solo con el código Markdown puro." > ./docs-repo/docs/api.md
+          copilot --prompt "Analiza los archivos en ./source-code/src/main/java y genera una referencia de API para Docusaurus (id: api, title: Endpoints). Responde solo con el código Markdown puro." > ./docs-repo/docs/api.md
 
       # 6. Guardar los archivos generados
       - name: Commit and Push AI Docs
