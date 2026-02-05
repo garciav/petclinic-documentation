@@ -13,10 +13,6 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    # DEFINIMOS EL TOKEN AQUÍ PARA TODO EL TRABAJO
-    env:
-      COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
-      GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
       
     steps:
       - name: Checkout Docs Repo
