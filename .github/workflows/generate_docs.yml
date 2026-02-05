@@ -37,26 +37,29 @@ jobs:
           cache: 'npm'
           cache-dependency-path: docs-repo/package-lock.json
 
-      # 4. Instalación de Copilot CLI y dependencias de Docusaurus
-      - name: Install Dependencies
+      # 4. Instalación de GitHub Copilot Extension (Versión 2026)
+      - name: Install GitHub Copilot Extension
         run: |
-          npm install -g @github/copilot-cli
-          cd docs-repo
-          npm install
+          # Instalamos la extensión de Copilot en el GitHub CLI que ya viene en el runner
+          gh extension install github/gh-copilot
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
 
-      # 5. GENERACIÓN CON IA (El Prompt Maestro)
-      # Aquí Copilot lee el código del Repo 1 y escribe en la carpeta /docs del Repo 2
+      # 5. GENERACIÓN CON IA (Usando gh copilot)
       - name: Generate AI Content
         run: |
-          # Generar Arquitectura y Stack Tecnológico
-          copilot-cli explain "./source-code" \
-            --prompt "Actúa como Arquitecto Senior. Genera un archivo Markdown para Docusaurus. Analiza el stack tecnológico del pom.xml y la estructura de carpetas. Incluye Frontmatter al inicio con id: arquitectura y title: Arquitectura del Sistema. Usa diagramas Mermaid para mostrar la estructura." \
+          # Usamos 'gh copilot explain' para analizar el código
+          # El comando redirige la salida al archivo .md de Docusaurus
+          
+          gh copilot explain "./source-code" \
+            --prompt "Actúa como Arquitecto Senior. Genera un archivo Markdown para Docusaurus con Frontmatter (id: arquitectura, title: Arquitectura). Analiza el stack de Spring Boot y genera diagramas Mermaid." \
             > ./docs-repo/docs/arquitectura.md
 
-          # Generar Documentación de API
-          copilot-cli explain "./source-code/src/main/java" \
-            --prompt "Busca clases con @RestController. Genera una guía de API en Markdown para Docusaurus con Frontmatter (id: api-endpoints, title: Referencia de API). Detalla rutas, métodos y modelos de datos." \
+          gh copilot explain "./source-code/src/main/java" \
+            --prompt "Genera la referencia de API para Docusaurus con Frontmatter (id: api, title: Endpoints). Enfócate en las rutas @RestController." \
             > ./docs-repo/docs/api.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
 
       # 6. Guardar los archivos generados en el repositorio (Persistencia)
       - name: Commit and Push AI Docs
