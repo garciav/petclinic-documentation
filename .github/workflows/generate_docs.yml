@@ -41,20 +41,27 @@ jobs:
           # Verificamos que el comando 'copilot' responda
           copilot --version
 
-      # 5. GENERACIÓN CON IA (Sintaxis exacta que pide el error)
+      # 5. GENERACIÓN CON IA (Priorizando COPILOT_GITHUB_TOKEN)
       - name: Generate AI Content
         env:
-          # El binario 'copilot' usa esta variable para autenticarse
+          # Usamos las tres variables para no dejar margen de error
+          COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
           GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
+          GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
         run: |
           mkdir -p ./docs-repo/docs
           
+          # Validación rápida: Si el token está vacío, fallará aquí con un mensaje claro
+          if [ -z "$COPILOT_GITHUB_TOKEN" ]; then
+            echo "Error: El secreto PAT_FOR_DOCS está vacío o no se encuentra."
+            exit 1
+          fi
+
           echo "Generando arquitectura.md..."
-          # Usamos 'copilot -p' tal como sugirió el error anterior
-          copilot -p "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura), tabla de dependencias y diagramas Mermaid. Responde solo el Markdown puro." > ./docs-repo/docs/arquitectura.md
+          copilot -p "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura), tabla de dependencias y diagramas Mermaid. Responde solo con el código Markdown puro." > ./docs-repo/docs/arquitectura.md
       
           echo "Generando api.md..."
-          copilot -p "Analiza los archivos en ./source-code/src/main/java y genera una referencia de API en Markdown para Docusaurus (id: api, title: Endpoints). Responde solo el Markdown puro." > ./docs-repo/docs/api.md
+          copilot -p "Analiza ./source-code/src/main/java y genera referencia de API para Docusaurus (id: api, title: Endpoints). Responde solo con el código Markdown puro." > ./docs-repo/docs/api.md
 
       # 6. Guardar los archivos generados
       - name: Commit and Push AI Docs
