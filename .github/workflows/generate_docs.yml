@@ -46,12 +46,10 @@ jobs:
       # 5. GENERACIÓN CON IA (Sintaxis simplificada definitiva)
       - name: Generate AI Content
         run: |
-          # Intentamos la llamada directa al motor de copilot
-          # El flag --help suele mostrar que el prompt va directo o con 'explain' sin flags
-          
-          gh copilot explain "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura), tabla de dependencias de Spring Boot y diagramas Mermaid. Responde solo con el Markdown." > ./docs-repo/docs/arquitectura.md
+          gh copilot -p "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura), tabla de dependencias de Spring Boot y diagramas Mermaid. Responde solo con el Markdown." > ./docs-repo/docs/arquitectura.md
+      
+          gh copilot -p "Analiza los archivos en ./source-code/src/main/java y genera una referencia de API en Markdown para Docusaurus con Frontmatter (id: api, title: Endpoints). Responde solo con el Markdown." > ./docs-repo/docs/api.md
 
-          gh copilot explain "Analiza los archivos en ./source-code/src/main/java y genera una referencia de API en Markdown para Docusaurus con Frontmatter (id: api, title: Endpoints). Responde solo con el Markdown." > ./docs-repo/docs/api.md
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
 
