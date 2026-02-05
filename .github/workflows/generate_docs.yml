@@ -43,6 +43,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
 
+      # 4.1 (Opcional) Validando acceso a copilot
+      - name: Validate Copilot Access
+        run: |
+          gh auth status
+          gh copilot status
+          gh copilot --version
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
+    
       # 5. GENERACIÓN CON IA (Sintaxis simplificada definitiva)
       - name: Generate AI Content
         run: |
