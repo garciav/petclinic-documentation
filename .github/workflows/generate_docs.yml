@@ -1,0 +1,82 @@
+name: AI Documentation Engine
+
+on:
+  repository_dispatch:
+    types: [code_updated] # Se activa cuando el Repo 1 envía la señal
+  workflow_dispatch:      # Permite ejecutarlo manualmente para pruebas
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Bajamos el código de este repositorio (Docs)
+      - name: Checkout Docs Repo
+        uses: actions/checkout@v4
+        with:
+          path: docs-repo
+
+      # 2. Bajamos el código del Microservicio (Repo 1)
+      # Usamos el PAT que guardaste en los Secrets
+      - name: Checkout Microservice Repo
+        uses: actions/checkout@v4
+        with:
+          repository: garciav/spring-petclinic
+          token: ${{ secrets.PAT_FOR_DOCS }}
+          path: source-code
+
+      # 3. Setup de Node.js para Docusaurus
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: docs-repo/package-lock.json
+
+      # 4. Instalación de Copilot CLI y dependencias de Docusaurus
+      - name: Install Dependencies
+        run: |
+          npm install -g @github/copilot-cli
+          cd docs-repo
+          npm install
+
+      # 5. GENERACIÓN CON IA (El Prompt Maestro)
+      # Aquí Copilot lee el código del Repo 1 y escribe en la carpeta /docs del Repo 2
+      - name: Generate AI Content
+        run: |
+          # Generar Arquitectura y Stack Tecnológico
+          copilot-cli explain "./source-code" \
+            --prompt "Actúa como Arquitecto Senior. Genera un archivo Markdown para Docusaurus. Analiza el stack tecnológico del pom.xml y la estructura de carpetas. Incluye Frontmatter al inicio con id: arquitectura y title: Arquitectura del Sistema. Usa diagramas Mermaid para mostrar la estructura." \
+            > ./docs-repo/docs/arquitectura.md
+
+          # Generar Documentación de API
+          copilot-cli explain "./source-code/src/main/java" \
+            --prompt "Busca clases con @RestController. Genera una guía de API en Markdown para Docusaurus con Frontmatter (id: api-endpoints, title: Referencia de API). Detalla rutas, métodos y modelos de datos." \
+            > ./docs-repo/docs/api.md
+
+      # 6. Guardar los archivos generados en el repositorio (Persistencia)
+      - name: Commit and Push AI Docs
+        run: |
+          cd docs-repo
+          git config user.name "GitHub Action Bot"
+          git config user.email "actions@github.com"
+          git add docs/*.md
+          # Solo hace commit si hay cambios reales
+          git diff --quiet && git diff --staged --quiet || (git commit -m "docs: auto-update by Copilot from SHA ${{ github.event.client_payload.sha }}" && git push)
+
+      # 7. Construcción del sitio estático (Docusaurus Build)
+      - name: Build Docusaurus
+        run: |
+          cd docs-repo
+          npm run build
+
+      # 8. Despliegue a GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs-repo/build
