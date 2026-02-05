@@ -37,24 +37,21 @@ jobs:
           cache: 'npm'
           cache-dependency-path: docs-repo/package-lock.json
 
-# 4. (Opcional) Verificar la versión de Copilot integrada
+      # 4. (Opcional) Verificar la versión de Copilot integrada
       - name: Check Copilot Version
         run: gh copilot --version
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
 
-      # 5. GENERACIÓN CON IA (Usando el comando nativo gh copilot)
+      # 5. GENERACIÓN CON IA (Sintaxis corregida para modo no interactivo)
       - name: Generate AI Content
         run: |
-          # Usamos 'gh copilot explain' para analizar el código
-          # Asegúrate de usar el flag --type shell o el que corresponda a tu versión
+          # Usamos el flag -p para enviar el prompt y especificamos la ruta dentro del texto
           
-          gh copilot explain "./source-code" \
-            --prompt "Actúa como Arquitecto Senior. Genera un archivo Markdown para Docusaurus con Frontmatter (id: arquitectura, title: Arquitectura). Analiza el stack de Spring Boot y genera diagramas Mermaid." \
+          gh copilot explain -p "Analiza el código en la carpeta ./source-code. Genera un archivo Markdown para Docusaurus con Frontmatter (id: arquitectura, title: Arquitectura). Analiza el stack de Spring Boot y genera diagramas Mermaid." \
             > ./docs-repo/docs/arquitectura.md
 
-          gh copilot explain "./source-code/src/main/java" \
-            --prompt "Genera la referencia de API para Docusaurus con Frontmatter (id: api, title: Endpoints). Enfócate en las rutas @RestController." \
+          gh copilot explain -p "Analiza los controladores en ./source-code/src/main/java. Genera la referencia de API para Docusaurus con Frontmatter (id: api, title: Endpoints). Enfócate en las rutas @RestController." \
             > ./docs-repo/docs/api.md
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
