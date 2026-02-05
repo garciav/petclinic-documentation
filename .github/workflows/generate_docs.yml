@@ -45,29 +45,27 @@ jobs:
           # Esto nos dirá si el token está presente (debería imprimir '81' o similar, no el token)
           echo "Longitud del token: ${#COPILOT_GITHUB_TOKEN}"
 
-    # 5. GENERACIÓN CON IA + DIAGNÓSTICO
+      # 5. GENERACIÓN CON IA (Forzando Login Interno)
       - name: Generate AI Content
         env:
-          COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
           GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
+          COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
         run: |
-          # --- SECCIÓN DE DIAGNÓSTICO ---
-          echo "=== Verificando Autenticación ==="
+          # 1. Forzamos a la CLI de GitHub a autenticarse formalmente en este runner
+          echo "${{ secrets.PAT_FOR_DOCS }}" | gh auth login --with-token
           
-          # 1. Verificar si el token tiene contenido (imprime longitud)
-          echo "Longitud del token: ${#COPILOT_GITHUB_TOKEN} caracteres"
-          
-          # 2. Ver status de la CLI de GitHub
+          # 2. Verificamos que el comando 'copilot' ahora sí vea la sesión
+          echo "Verificando sesión de Copilot..."
           gh auth status
           
-          # 3. Intentar un ping rápido a copilot
-          copilot --version
-          echo "================================"
-
-          # --- GENERACIÓN REAL ---
           mkdir -p ./docs-repo/docs
+          
+          # 3. Ejecución con el flag -p (modo no interactivo)
           echo "Generando arquitectura.md..."
-          copilot --prompt "Analiza el código en ./source-code y genera un archivo Markdown para Docusaurus. Responde solo con el Markdown." > ./docs-repo/docs/arquitectura.md
+          copilot -p "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura). Responde solo con el código Markdown puro." > ./docs-repo/docs/arquitectura.md
+      
+          echo "Generando api.md..."
+          copilot -p "Analiza los archivos en ./source-code/src/main/java y genera una referencia de API en Markdown para Docusaurus (id: api, title: Endpoints). Responde solo con el código Markdown puro." > ./docs-repo/docs/api.md
 
       # 6. Guardar los archivos generados
       - name: Commit and Push AI Docs
