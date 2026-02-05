@@ -37,13 +37,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: docs-repo/package-lock.json
 
-      # 4. (Opcional) Verificar la versión de Copilot integrada
-      - name: Check Copilot Version
-        run: gh copilot --version
-        env:
-          GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
-
-      # 4.1 Validando acceso a copilot de forma segura
+      # 4Validando acceso a copilot de forma segura
       - name: Validate Copilot Access
         env:
           GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
