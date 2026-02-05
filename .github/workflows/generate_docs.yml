@@ -45,22 +45,27 @@ jobs:
           # Esto nos dirá si el token está presente (debería imprimir '81' o similar, no el token)
           echo "Longitud del token: ${#COPILOT_GITHUB_TOKEN}"
 
-      # 5. GENERACIÓN CON IA (Forzando Login Interno)
+# 5. GENERACIÓN CON IA (Limpiando variables para forzar sesión física)
       - name: Generate AI Content
-        env:
-          GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
-          COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
+        # Quitamos el env: a nivel de paso para que no bloquee el login
         run: |
-          # 1. Forzamos a la CLI de GitHub a autenticarse formalmente en este runner
+          # 1. Limpiamos cualquier rastro de tokens en el entorno para permitir el login físico
+          unset GH_TOKEN
+          unset GITHUB_TOKEN
+          
+          # 2. Forzamos el login. Al no haber variables, 'gh' guardará el token en ~/.config/gh/
           echo "${{ secrets.PAT_FOR_DOCS }}" | gh auth login --with-token
           
-          # 2. Verificamos que el comando 'copilot' ahora sí vea la sesión
-          echo "Verificando sesión de Copilot..."
+          # 3. Ahora que el archivo de sesión existe, definimos la variable que Copilot CLI adora
+          export COPILOT_GITHUB_TOKEN="${{ secrets.PAT_FOR_DOCS }}"
+          export GH_TOKEN="${{ secrets.PAT_FOR_DOCS }}"
+          
+          echo "=== Verificando Estado Final ==="
           gh auth status
           
           mkdir -p ./docs-repo/docs
           
-          # 3. Ejecución con el flag -p (modo no interactivo)
+          # 4. Generación (Usando el binario 'copilot' de NPM directamente)
           echo "Generando arquitectura.md..."
           copilot -p "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura). Responde solo con el código Markdown puro." > ./docs-repo/docs/arquitectura.md
       
