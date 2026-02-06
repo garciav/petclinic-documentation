@@ -1,379 +1,541 @@
-● List directory source-code
-  └ 25 files found
+● Explorar estructura Java
+  $ find ./source-code/src/main/java -type f -name "*.java" | head -50
+  └ 24 lines...
 
-● Find Java source files
-  $ find /home/runner/work/petclinic-documentation/petclinic-documentation/source-code/src/main/java
-   -type f -name "*.java" | head -20
-  └ 21 lines...
+● List directory source-code/src/main/java
+  └ 7 files found
 
-Now let me read the main Java files to extract API information:
+✗ Contar líneas de código Java
+  $ find ./source-code/src/main/java -type f -name "*.java" | xargs wc -l | tail -1
+  Permission denied and could not request permission from user
 
-● List directory source-code/src/main/java/org/springframework/samples/petclinic
-  └ 11 files found
+✗ Leer archivos Java principales
+  $ cat ./source-code/src/main/java/org/springframework/samples/petclinic/model/BaseEntity.java
+  ./source-code/src/main/java/org/springframework/samples/petclinic/model/NamedEntity.java
+  ./source-code/src/main/java/org/springframework/samples/petclinic/model/Person.java
+  ./source-code/src/main/java/org/springframework/samples/petclinic/owner/Owner.java
+  ./source-code/src/main/java/org/springframework/samples/petclinic/owner/Pet.java ...
+  Permission denied and could not request permission from user
 
-● Count total Java files
-  $ find /home/runner/work/petclinic-documentation/petclinic-documentation/source-code/src/main/java
-   -name "*.java" -type f | wc -l
-  └ 2 lines...
+● List directory source-code/src/main/java/org/springframework/samples/petclinic/model
+  └ 10 files found
 
-● Read main application file
-  $ cat /home/runner/work/petclinic-documentation/petclinic-documentation/source-code/src/main/java/
-  org/springframework/samples/petclinic/PetClinicApplication.java
-  └ 36 lines...
+● Read source-code/src/main/java/org/springframework/samples/petclinic/model/BaseEntity.java
+  └ 56 lines read
 
-● Read BaseEntity
-  $ cat /home/runner/work/petclinic-documentation/petclinic-documentation/source-code/src/main/java/
-  org/springframework/samples/petclinic/model/BaseEntity.java
-  └ 52 lines...
+● Read source-code/src/main/java/org/springframework/samples/petclinic/model/NamedEntity.java
+  └ 52 lines read
 
-● Read Person model
-  $ cat /home/runner/work/petclinic-documentation/petclinic-documentation/source-code/src/main/java/
-  org/springframework/samples/petclinic/model/Person.java
-  └ 55 lines...
+● Read source-code/src/main/java/org/springframework/samples/petclinic/model/Person.java
+  └ 72 lines read
 
-● Read Owner class
-  $ cat /home/runner/work/petclinic-documentation/petclinic-documentation/source-code/src/main/java/
-  org/springframework/samples/petclinic/owner/Owner.java
-  └ 174 lines...
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/Owner.java
+  └ 178 lines read
 
-● Read Pet class
-  $ cat /home/runner/work/petclinic-documentation/petclinic-documentation/source-code/src/main/java/
-  org/springframework/samples/petclinic/owner/Pet.java
-  └ 85 lines...
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/Pet.java
+  └ 89 lines read
 
-● Read Visit class
-  $ cat /home/runner/work/petclinic-documentation/petclinic-documentation/source-code/src/main/java/
-  org/springframework/samples/petclinic/owner/Visit.java
-  └ 69 lines...
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/Visit.java
+  └ 73 lines read
 
-● Read Vet class
-  $ cat /home/runner/work/petclinic-documentation/petclinic-documentation/source-code/src/main/java/
-  org/springframework/samples/petclinic/vet/Vet.java
-  └ 80 lines...
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/PetType.java
+  └ 35 lines read
 
-● Read OwnerController
-  $ cat /home/runner/work/petclinic-documentation/petclinic-documentation/source-code/src/main/java/
-  org/springframework/samples/petclinic/owner/OwnerController.java
-  └ 168 lines...
+● Read source-code/src/main/java/org/springframework/samples/petclinic/vet/Vet.java
+  └ 84 lines read
 
-● Read OwnerRepository
-  $ cat /home/runner/work/petclinic-documentation/petclinic-documentation/source-code/src/main/java/
-  org/springframework/samples/petclinic/owner/OwnerRepository.java
-  └ 83 lines...
+● Read source-code/src/main/java/org/springframework/samples/petclinic/vet/Specialty.java
+  └ 37 lines read
 
-● Read VetRepository and VetController
-  $ cat /home/runner/work/petclinic-documentation/petclinic-documentation/source-code/src/main/java/
-  org/springframework/samples/petclinic/vet/VetRepository.java && echo "---" && cat
-  /home/runner/work/petclinic-documentation/petclinic-documentation/source-code/src/main/java/org/sp
-  ringframework/samples/petclinic/vet/VetController.java
-  └ 139 lines...
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/OwnerController.java
+  └ 172 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/PetController.java
+  └ 120 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/VisitController.java
+  └ 98 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/vet/VetController.java
+  └ 84 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/OwnerRepository.java
+  └ 87 lines read
+
+Ahora genero la referencia de API en Markdown:
 
 ```markdown
-# API Reference - PetClinic
+# Referencia de API - PetClinic
 
-## Core Models
+## Modelos de Dominio
 
 ### BaseEntity
-**Package:** `org.springframework.samples.petclinic.model`
+Clase base para todas las entidades con propiedad de identificador.
 
-Base class for domain objects with identifier property.
+**Propiedades:**
+- `id: Integer` - Identificador único (auto-generado)
 
-#### Properties
-- `id: Integer` - Unique identifier (auto-generated)
-
-#### Methods
-- `getId(): Integer` - Get the entity identifier
-- `setId(Integer id): void` - Set the entity identifier
-- `isNew(): boolean` - Check if entity is new (id is null)
-
----
-
-### Person
-**Package:** `org.springframework.samples.petclinic.model`  
-**Extends:** `BaseEntity`
-
-Represents a person entity with name attributes.
-
-#### Properties
-- `firstName: String` - First name (required, non-empty)
-- `lastName: String` - Last name (required, non-empty)
-
-#### Methods
-- `getFirstName(): String` - Get first name
-- `setFirstName(String firstName): void` - Set first name
-- `getLastName(): String` - Get last name
-- `setLastName(String lastName): void` - Set last name
+**Métodos:**
+- `Integer getId()` - Obtiene el ID de la entidad
+- `void setId(Integer id)` - Establece el ID de la entidad
+- `boolean isNew()` - Verifica si la entidad es nueva (ID nulo)
 
 ---
 
 ### NamedEntity
-**Package:** `org.springframework.samples.petclinic.model`  
-**Extends:** `BaseEntity`
+Extiende `BaseEntity` y agrega la propiedad de nombre.
 
-Base class for named entities.
+**Propiedades:**
+- `id: Integer` - (heredado de BaseEntity)
+- `name: String` - Nombre de la entidad
+
+**Métodos:**
+- `String getName()` - Obtiene el nombre
+- `void setName(String name)` - Establece el nombre
+- `String toString()` - Retorna la representación en texto (nombre)
 
 ---
 
-## Owner Model
+### Person
+Extiende `BaseEntity` y representa una persona.
+
+**Propiedades:**
+- `id: Integer` - (heredado de BaseEntity)
+- `firstName: String` - Nombre (requerido)
+- `lastName: String` - Apellido (requerido)
+- `customerDocumentId: String` - ID de documento del cliente
+- `gender: String` - Género
+
+**Métodos:**
+- `String getFirstName()` / `void setFirstName(String firstName)`
+- `String getLastName()` / `void setLastName(String lastName)`
+- `String getCustomerDocumentId()` / `void setCustomerDocumentId(String id)`
+
+---
+
+## Módulo Owner (Propietarios)
 
 ### Owner
-**Package:** `org.springframework.samples.petclinic.owner`  
-**Extends:** `Person`  
-**Entity Table:** `owners`
+Extiende `Person` y representa un propietario de mascotas.
 
-Represents a pet owner with contact information and associated pets.
+**Tabla Base:** `owners`
 
-#### Properties
-- `address: String` - Owner's address (required, non-empty)
-- `city: String` - Owner's city (required, non-empty)
-- `telephone: String` - Owner's phone number (required, 10 digits)
-- `pets: List<Pet>` - List of owner's pets (eager fetch, ordered by name)
+**Propiedades:**
+- `id: Integer` - (heredado)
+- `firstName: String` - (heredado)
+- `lastName: String` - (heredado)
+- `address: String` - Dirección (requerida)
+- `city: String` - Ciudad (requerida)
+- `telephone: String` - Teléfono (requerido, máx 10 dígitos)
+- `pets: List<Pet>` - Lista de mascotas asociadas
 
-#### Methods
-- `getAddress(): String` - Get owner's address
-- `setAddress(String address): void` - Set owner's address
-- `getCity(): String` - Get owner's city
-- `setCity(String city): void` - Set owner's city
-- `getTelephone(): String` - Get owner's telephone
-- `setTelephone(String telephone): void` - Set owner's telephone
-- `getPets(): List<Pet>` - Get owner's pets
-- `addPet(Pet pet): void` - Add a pet to the owner
-- `getPet(String name): Pet` - Get pet by name
-- `getPet(Integer id): Pet` - Get pet by ID
-- `getPet(String name, boolean ignoreNew): Pet` - Get pet by name with option to ignore new pets
-- `addVisit(Integer petId, Visit visit): Owner` - Add a visit to a pet
-- `toString(): String` - String representation
+**Métodos:**
+- `String getAddress()` / `void setAddress(String address)`
+- `String getCity()` / `void setCity(String city)`
+- `String getTelephone()` / `void setTelephone(String telephone)`
+- `List<Pet> getPets()` - Obtiene todas las mascotas
+- `void addPet(Pet pet)` - Agrega una mascota nueva
+- `Pet getPet(String name)` - Obtiene mascota por nombre
+- `Pet getPet(Integer id)` - Obtiene mascota por ID
+- `Pet getPet(String name, boolean ignoreNew)` - Obtiene mascota por nombre (opción de ignorar nuevas)
+- `Owner addVisit(Integer petId, Visit visit)` - Agrega una visita a una mascota
+
+**Relaciones:**
+- `1:N` con `Pet` (cascade: ALL, fetch: EAGER)
 
 ---
 
-## Pet Model
-
 ### Pet
-**Package:** `org.springframework.samples.petclinic.owner`  
-**Extends:** `NamedEntity`  
-**Entity Table:** `pets`
+Extiende `NamedEntity` y representa una mascota.
 
-Represents a pet with type, birth date, and visit history.
+**Tabla Base:** `pets`
 
-#### Properties
-- `birthDate: LocalDate` - Pet's birth date (format: yyyy-MM-dd)
-- `type: PetType` - Pet's type
-- `visits: Set<Visit>` - Collection of visits (eager fetch, ordered by visit date ascending)
+**Propiedades:**
+- `id: Integer` - (heredado)
+- `name: String` - (heredado)
+- `birthDate: LocalDate` - Fecha de nacimiento (formato: yyyy-MM-dd)
+- `type: PetType` - Tipo de mascota
+- `visits: Set<Visit>` - Conjunto de visitas asociadas
 
-#### Methods
-- `setBirthDate(LocalDate birthDate): void` - Set pet's birth date
-- `getBirthDate(): LocalDate` - Get pet's birth date
-- `getType(): PetType` - Get pet's type
-- `setType(PetType type): void` - Set pet's type
-- `getVisits(): Collection<Visit>` - Get all visits
-- `addVisit(Visit visit): void` - Add a visit to the pet
+**Métodos:**
+- `LocalDate getBirthDate()` / `void setBirthDate(LocalDate birthDate)`
+- `PetType getType()` / `void setType(PetType type)`
+- `Collection<Visit> getVisits()` - Obtiene todas las visitas
+- `void addVisit(Visit visit)` - Agrega una visita
+
+**Relaciones:**
+- `N:1` con `PetType`
+- `1:N` con `Visit` (cascade: ALL, fetch: EAGER)
 
 ---
 
 ### PetType
-**Package:** `org.springframework.samples.petclinic.owner`  
-**Extends:** `NamedEntity`  
-**Entity Table:** `types`
+Extiende `NamedEntity` y representa el tipo de mascota.
 
-Represents a pet type (e.g., dog, cat).
+**Tabla Base:** `types`
+
+**Propiedades:**
+- `id: Integer` - (heredado)
+- `name: String` - Nombre del tipo (ej: Cat, Dog, Hamster)
 
 ---
-
-## Visit Model
 
 ### Visit
-**Package:** `org.springframework.samples.petclinic.owner`  
-**Extends:** `BaseEntity`  
-**Entity Table:** `visits`
+Extiende `BaseEntity` y representa una visita veterinaria.
 
-Represents a veterinary visit for a pet.
+**Tabla Base:** `visits`
 
-#### Properties
-- `date: LocalDate` - Visit date (format: yyyy-MM-dd, defaults to current date)
-- `description: String` - Visit description (required, non-empty)
+**Propiedades:**
+- `id: Integer` - (heredado)
+- `date: LocalDate` - Fecha de la visita (formato: yyyy-MM-dd, por defecto: hoy)
+- `description: String` - Descripción de la visita (requerida)
 
-#### Methods
-- `Visit()` - Constructor (initializes date to current date)
-- `getDate(): LocalDate` - Get visit date
-- `setDate(LocalDate date): void` - Set visit date
-- `getDescription(): String` - Get visit description
-- `setDescription(String description): void` - Set visit description
+**Métodos:**
+- `LocalDate getDate()` / `void setDate(LocalDate date)`
+- `String getDescription()` / `void setDescription(String description)`
+
+**Constructor:**
+- `Visit()` - Crea una visita con la fecha actual
 
 ---
 
-## Vet Model
+## Módulo Vet (Veterinarios)
 
 ### Vet
-**Package:** `org.springframework.samples.petclinic.vet`  
-**Extends:** `Person`  
-**Entity Table:** `vets`
+Extiende `Person` y representa un veterinario.
 
-Represents a veterinarian with specialties.
+**Tabla Base:** `vets`
 
-#### Properties
-- `specialties: Set<Specialty>` - Set of veterinarian specialties (eager fetch, many-to-many relationship)
+**Propiedades:**
+- `id: Integer` - (heredado)
+- `firstName: String` - (heredado)
+- `lastName: String` - (heredado)
+- `specialties: Set<Specialty>` - Conjunto de especialidades
 
-#### Methods
-- `getSpecialties(): List<Specialty>` - Get sorted list of specialties
-- `getNrOfSpecialties(): int` - Get number of specialties
-- `addSpecialty(Specialty specialty): void` - Add a specialty to the veterinarian
+**Métodos:**
+- `List<Specialty> getSpecialties()` - Obtiene especialidades ordenadas por nombre
+- `int getNrOfSpecialties()` - Cuenta el número de especialidades
+- `void addSpecialty(Specialty specialty)` - Agrega una especialidad
+
+**Relaciones:**
+- `N:N` con `Specialty` (tabla: vet_specialties, fetch: EAGER)
 
 ---
 
 ### Specialty
-**Package:** `org.springframework.samples.petclinic.vet`  
-**Extends:** `NamedEntity`  
-**Entity Table:** `specialties`
+Extiende `NamedEntity` y representa la especialidad de un veterinario.
 
-Represents a veterinary specialty (e.g., radiology, dentistry).
+**Tabla Base:** `specialties`
 
----
-
-### Vets
-**Package:** `org.springframework.samples.petclinic.vet`
-
-Container class for Vet collections used for XML/JSON mapping.
+**Propiedades:**
+- `id: Integer` - (heredado)
+- `name: String` - Nombre de la especialidad (ej: dentistry)
 
 ---
 
-## Repositories
+## Repositorios
 
 ### OwnerRepository
-**Package:** `org.springframework.samples.petclinic.owner`  
-**Extends:** `Repository<Owner, Integer>`
+Interfaz de acceso a datos para entidades `Owner`.
 
-Data access layer for Owner entities.
+**Métodos:**
 
-#### Methods
-- `findPetTypes(): List<PetType>` - Retrieve all pet types (cached, read-only)
-- `findByLastName(String lastName, Pageable pageable): Page<Owner>` - Find owners by last name (pagination, read-only)
-- `findById(Integer id): Owner` - Find owner by ID with eager-loaded pets (read-only)
-- `save(Owner owner): void` - Save or update an owner
-- `findAll(Pageable pageable): Page<Owner>` - Retrieve all owners (pagination, read-only)
+#### `List<PetType> findPetTypes()`
+Recupera todos los tipos de mascota ordenados por nombre.
 
----
+**Parámetros:** Ninguno
 
-### VetRepository
-**Package:** `org.springframework.samples.petclinic.vet`  
-**Extends:** `Repository<Vet, Integer>`
+**Retorna:** `List<PetType>` - Lista de tipos de mascotas
 
-Data access layer for Vet entities.
-
-#### Methods
-- `findAll(): Collection<Vet>` - Retrieve all vets (cached, read-only)
-- `findAll(Pageable pageable): Page<Vet>` - Retrieve all vets (pagination, cached, read-only)
+**Propiedades:** Solo lectura, transaccional
 
 ---
 
-## Controllers
+#### `Page<Owner> findByLastName(String lastName, Pageable pageable)`
+Busca propietarios por apellido (búsqueda por prefijo).
+
+**Parámetros:**
+- `lastName: String` - Apellido a buscar (búsqueda comienza con este valor)
+- `pageable: Pageable` - Información de paginación
+
+**Retorna:** `Page<Owner>` - Página de propietarios coincidentes
+
+**Propiedades:** Solo lectura, transaccional
+
+---
+
+#### `Owner findById(Integer id)`
+Obtiene un propietario por su ID.
+
+**Parámetros:**
+- `id: Integer` - ID del propietario
+
+**Retorna:** `Owner` - El propietario encontrado (con mascotas cargadas)
+
+**Propiedades:** Solo lectura, transaccional
+
+---
+
+#### `void save(Owner owner)`
+Guarda o actualiza un propietario.
+
+**Parámetros:**
+- `owner: Owner` - Propietario a guardar
+
+**Retorna:** Ninguno
+
+---
+
+#### `Page<Owner> findAll(Pageable pageable)`
+Obtiene todos los propietarios con paginación.
+
+**Parámetros:**
+- `pageable: Pageable` - Información de paginación
+
+**Retorna:** `Page<Owner>` - Página de propietarios
+
+**Propiedades:** Solo lectura, transaccional
+
+---
+
+## Controladores
 
 ### OwnerController
-**Package:** `org.springframework.samples.petclinic.owner`
+Controlador MVC para gestionar operaciones con propietarios.
 
-Handles owner-related HTTP requests.
+**Rutas:**
 
-#### Request Mappings
-- `GET /owners/new` - Initialize owner creation form
-- `POST /owners/new` - Process owner creation
-- `GET /owners/find` - Initialize owner search form
-- `GET /owners` - Search and list owners (pagination support)
-- `GET /owners/\{ownerId} - Display owner details
-- `GET /owners/\{ownerId\}/edit` - Initialize owner edit form
-- `POST /owners/\{ownerId\}/edit` - Process owner update
+#### `GET /owners/new`
+Inicializa el formulario de creación de propietario.
 
-#### Methods
-- `initCreationForm(Map<String, Object> model): String` - Show new owner form
-- `processCreationForm(Owner owner, BindingResult result): String` - Handle owner creation
-- `initFindForm(Map<String, Object> model): String` - Show owner search form
-- `processFindForm(int page, Owner owner, BindingResult result, Model model): String` - Handle owner search (default page: 1)
-- `showOwner(int ownerId): ModelAndView` - Display owner details
-- `initUpdateOwnerForm(int ownerId, Model model): String` - Show edit owner form
-- `processUpdateOwnerForm(Owner owner, BindingResult result, int ownerId): String` - Handle owner update
+**Retorna:** Vista `owners/createOrUpdateOwnerForm`
+
+---
+
+#### `POST /owners/new`
+Procesa la creación de un nuevo propietario.
+
+**Parámetros:**
+- `owner: Owner` - Propietario a crear (validado)
+- `result: BindingResult` - Resultado de validación
+
+**Retorna:** Vista de formulario si hay errores, redirige a `/owners/\{id} si éxito
+
+---
+
+#### `GET /owners/find`
+Inicializa el formulario de búsqueda de propietarios.
+
+**Retorna:** Vista `owners/findOwners`
+
+---
+
+#### `GET /owners`
+Busca propietarios por apellido con paginación.
+
+**Parámetros:**
+- `page: int` - Número de página (default: 1)
+- `owner: Owner` - Propietario con criterios de búsqueda
+- `result: BindingResult` - Resultado de validación
+- `model: Model` - Modelo de vista
+
+**Retorna:** 
+- Vista de formulario si no hay resultados
+- Redirige a `/owners/\{id} si encuentra exactamente 1
+- Vista `owners/ownersList` si hay múltiples resultados
+
+---
+
+#### `GET /owners/\{ownerId\}/edit`
+Inicializa el formulario de edición de propietario.
+
+**Parámetros:**
+- `ownerId: int` - ID del propietario
+- `model: Model` - Modelo de vista
+
+**Retorna:** Vista `owners/createOrUpdateOwnerForm`
+
+---
+
+#### `POST /owners/\{ownerId\}/edit`
+Procesa la actualización de un propietario.
+
+**Parámetros:**
+- `owner: Owner` - Propietario actualizado (validado)
+- `result: BindingResult` - Resultado de validación
+- `ownerId: int` - ID del propietario
+
+**Retorna:** Vista de formulario si hay errores, redirige a `/owners/\{ownerId} si éxito
+
+---
+
+#### `GET /owners/\{ownerId}
+Muestra los detalles de un propietario.
+
+**Parámetros:**
+- `ownerId: int` - ID del propietario
+
+**Retorna:** ModelAndView con vista `owners/ownerDetails`
+
+---
+
+### PetController
+Controlador MVC para gestionar mascotas de propietarios.
+
+**Ruta Base:** `/owners/\{ownerId}
+
+**Métodos Auxiliares:**
+
+#### `@ModelAttribute("types")`
+Carga todos los tipos de mascota disponibles.
+
+**Retorna:** `Collection<PetType>`
+
+---
+
+#### `@ModelAttribute("owner")`
+Carga el propietario basado en ownerId.
+
+**Retorna:** `Owner`
+
+---
+
+#### `@ModelAttribute("pet")`
+Carga o crea una mascota.
+
+**Parámetros:**
+- `ownerId: int`
+- `petId: Integer` (opcional)
+
+**Retorna:** `Pet` (nueva o existente)
+
+---
+
+**Rutas:**
+
+#### `GET /owners/\{ownerId\}/pets/new`
+Inicializa el formulario de creación de mascota.
+
+**Retorna:** Vista `pets/createOrUpdatePetForm`
+
+---
+
+#### `POST /owners/\{ownerId\}/pets/new`
+Procesa la creación de una nueva mascota.
+
+**Parámetros:**
+- `owner: Owner`
+- `pet: Pet` - Mascota a crear (validada)
+- `result: BindingResult`
+- `model: ModelMap`
+
+**Retorna:** Vista de formulario si hay errores o duplicado, redirige a `/owners/\{ownerId} si éxito
+
+---
+
+#### `GET /owners/\{ownerId\}/pets/\{petId\}/edit`
+Inicializa el formulario de edición de mascota.
+
+**Parámetros:**
+- `owner: Owner`
+- `petId: int`
+- `model: ModelMap`
+
+**Retorna:** Vista `pets/createOrUpdatePetForm`
+
+---
+
+#### `POST /owners/\{ownerId\}/pets/\{petId\}/edit`
+Procesa la actualización de una mascota.
+
+**Parámetros:**
+- `pet: Pet` - Mascota actualizada (validada)
+- `result: BindingResult`
+- `owner: Owner`
+- `model: ModelMap`
+
+**Retorna:** Vista de formulario si hay errores, redirige a `/owners/\{ownerId} si éxito
+
+---
+
+### VisitController
+Controlador MVC para gestionar visitas veterinarias.
+
+**Ruta Base:** `/owners/\{ownerId\}/pets/\{petId}
+
+**Métodos Auxiliares:**
+
+#### `@ModelAttribute("visit")`
+Carga o crea una visita asociada a una mascota.
+
+**Parámetros:**
+- `ownerId: int`
+- `petId: int`
+- `model: Map<String, Object>`
+
+**Retorna:** `Visit` (nueva)
+
+---
+
+**Rutas:**
+
+#### `GET /owners/\{ownerId\}/pets/\{petId\}/visits/new`
+Inicializa el formulario de creación de visita.
+
+**Parámetros:**
+- `petId: int`
+- `model: Map<String, Object>`
+
+**Retorna:** Vista `pets/createOrUpdateVisitForm`
+
+---
+
+#### `POST /owners/\{ownerId\}/pets/\{petId\}/visits/new`
+Procesa la creación de una nueva visita.
+
+**Parámetros:**
+- `owner: Owner`
+- `petId: int`
+- `visit: Visit` - Visita a crear (validada)
+- `result: BindingResult`
+
+**Retorna:** Vista de formulario si hay errores, redirige a `/owners/\{ownerId} si éxito
 
 ---
 
 ### VetController
-**Package:** `org.springframework.samples.petclinic.vet`
+Controlador MVC para gestionar veterinarios.
 
-Handles veterinarian-related HTTP requests.
+**Rutas:**
 
-#### Request Mappings
-- `GET /vets.html` - Display vets list (HTML, pagination support)
-- `GET /vets` - Retrieve vets as JSON/XML (no pagination)
+#### `GET /vets.html`
+Muestra la lista de veterinarios con paginación (HTML).
 
-#### Methods
-- `showVetList(int page, Model model): String` - Display paginated vet list (default page: 1)
-- `showResourcesVetList(): Vets` - Return vets as resource object for serialization
+**Parámetros:**
+- `page: int` - Número de página (default: 1)
+- `model: Model` - Modelo de vista
 
----
-
-## Application Entry Point
-
-### PetClinicApplication
-**Package:** `org.springframework.samples.petclinic`
-
-Spring Boot application entry point.
-
-#### Methods
-- `main(String[] args): void` - Start the PetClinic application
+**Retorna:** Vista `vets/vetList` con paginación
 
 ---
 
-## Annotations & Constraints
+#### `GET /vets`
+Retorna la lista de veterinarios en formato JSON/XML.
 
-### Validation Annotations
-- `@NotEmpty` - Field must not be empty
-- `@Digits(fraction=0, integer=10)` - Numeric validation for phone numbers
-
-### JPA Annotations
-- `@Entity` - Mark class as JPA entity
-- `@Table` - Specify database table name
-- `@MappedSuperclass` - Mark as mapped superclass
-- `@Column` - Specify column properties
-- `@Id` - Mark as primary key
-- `@GeneratedValue` - Auto-generate ID values
-- `@OneToMany` - One-to-many relationship
-- `@ManyToOne` - Many-to-one relationship
-- `@ManyToMany` - Many-to-many relationship
-- `@JoinColumn` - Specify join column
-- `@JoinTable` - Specify join table for many-to-many
-- `@OrderBy` - Order collections
-
-### Spring Annotations
-- `@SpringBootApplication` - Enable Spring Boot auto-configuration
-- `@Controller` - Mark as Spring MVC controller
-- `@GetMapping` - Map GET requests
-- `@PostMapping` - Map POST requests
-- `@PathVariable` - Extract path variables
-- `@RequestParam` - Extract query parameters
-- `@ModelAttribute` - Bind model attributes
-- `@InitBinder` - Customize data binding
-- `@ResponseBody` - Serialize response body
-- `@Transactional` - Transaction management
-- `@Cacheable` - Cache results
-- `@DateTimeFormat` - Format date/time fields
+**Retorna:** `Vets` (contenedor de lista de veterinarios) - Serializable a JSON/XML
 
 ---
 
-## Data Pagination
+## Validaciones
 
-Pagination support via Spring Data `Pageable` interface:
-- Default page size: 5 items per page
-- Page numbering: 1-indexed (user-facing)
-- Query parameter: `page` (default: 1)
+### Anotaciones de Validación Utilizadas:
 
----
+- `@NotEmpty` - Campo requerido (no vacío)
+- `@Digits(fraction = 0, integer = 10)` - Número específico de dígitos (teléfono)
+- `@DateTimeFormat(pattern = "yyyy-MM-dd")` - Formato de fecha
 
-## Transaction Configuration
+### Validadores Personalizados:
 
-- Read-only operations use `@Transactional(readOnly = true)` for optimization
-- Write operations (save) are transactional by default
-
----
-
-## Caching
-
-- `@Cacheable("vets")` - Cache results for all vets queries
-- Cache name: "vets"
+- `PetValidator` - Valida que una mascota sea válida en el contexto de su propietario
 ```
 
