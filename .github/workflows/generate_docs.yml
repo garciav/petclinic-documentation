@@ -41,32 +41,21 @@ jobs:
           # Esto nos dirá si el token está presente (debería imprimir '81' o similar, no el token)
           echo "Longitud del token: ${#COPILOT_GITHUB_TOKEN}"
 
-# 5. GENERACIÓN CON IA (Limpiando variables para forzar sesión física)
+      # 5. GENERACIÓN CON IA (Versión compatible con MDX)
       - name: Generate AI Content
-        # Quitamos el env: a nivel de paso para que no bloquee el login
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
+          GH_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
         run: |
-          # 1. Limpiamos cualquier rastro de tokens en el entorno para permitir el login físico
-          unset GH_TOKEN
-          unset GITHUB_TOKEN
-          
-          # 2. Forzamos el login. Al no haber variables, 'gh' guardará el token en ~/.config/gh/
-          echo "${{ secrets.PAT_FOR_DOCS }}" | gh auth login --with-token
-          
-          # 3. Ahora que el archivo de sesión existe, definimos la variable que Copilot CLI adora
-          export COPILOT_GITHUB_TOKEN="${{ secrets.PAT_FOR_DOCS }}"
-          export GH_TOKEN="${{ secrets.PAT_FOR_DOCS }}"
-          
-          echo "=== Verificando Estado Final ==="
-          gh auth status
-          
           mkdir -p ./docs-repo/docs
           
-          # 4. Generación (Usando el binario 'copilot' de NPM directamente)
+          # Instrucción clave: "Strictly avoid unescaped curly braces"
+          
           echo "Generando arquitectura.md..."
-          copilot -p "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura). Responde solo con el código Markdown puro." > ./docs-repo/docs/arquitectura.md
+          copilot -p "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura). IMPORTANTE: El archivo debe ser compatible con MDX. No uses llaves {} fuera de bloques de código. Si necesitas mostrar variables, usa el formato \`variable\`. Responde solo con el Markdown puro." > ./docs-repo/docs/arquitectura.md
       
           echo "Generando api.md..."
-          copilot -p "Analiza los archivos en ./source-code/src/main/java y genera una referencia de API en Markdown para Docusaurus (id: api, title: Endpoints). Responde solo con el código Markdown puro." > ./docs-repo/docs/api.md
+          copilot -p "Analiza ./source-code/src/main/java y genera referencia de API para Docusaurus (id: api, title: Endpoints). IMPORTANTE: El archivo debe ser compatible con MDX de Docusaurus 3. Evita el uso de llaves {} en el texto normal para evitar ReferenceErrors. Usa bloques de código estrictos. Responde solo con el Markdown puro." > ./docs-repo/docs/api.md
 
       # 6. Guardar los archivos generados
       - name: Commit and Push AI Docs
