@@ -1,42 +1,45 @@
 ● List directory .
   └ 8 files found
 
-● List directory source-code
-  └ 25 files found
+● Find source code files to understand structure
+  $ find ./source-code -type f -name "*.java" -o -name "*.xml" -o -name "*.properties" | head -30
+  └ 31 lines...
 
-● Explore source code structure
-  $ find ./source-code -type f -name "*.java" -o -name "*.xml" -o -name "*.properties" -o -name
-  "*.gradle" -o -name "pom.xml" | head -20
-  └ 21 lines...
-
-● List directory source-code/src/main
-  └ 9 files found
-
-● List all Java source files
-  $ find ./source-code/src/main/java -type f -name "*.java" | sort
-  └ 24 lines...
-
-● View pom.xml to understand dependencies
-  $ cat ./source-code/pom.xml | head -50
-  └ 51 lines...
-
-● View readme for project description
-  $ cat ./source-code/readme.md | head -80
-  └ 81 lines...
-
-✗ View templates directory
-  $ ls -la ./source-code/src/main/resources/templates/ 2>/dev/null | head -20
+✗ Count Java source files
+  $ find ./source-code/src/main/java -type f -name "*.java" | xargs wc -l | tail -1
   Permission denied and could not request permission from user
 
-● Find database and configuration files
-  $ find ./source-code/src/main/resources -type f -name "*.sql" -o -name "*.xml" | head -10
-  └ 10 lines...
+● Check pom.xml
+  $ head -50 ./source-code/pom.xml | grep -E "artifactId|version" | head -5
+  └ 6 lines...
 
-● View database schema
-  $ cat ./source-code/src/main/resources/db/h2/schema.sql
-  └ 65 lines...
+● List main package directories
+  $ ls -la ./source-code/src/main/java/org/springframework/samples/petclinic/
+  └ 9 lines...
 
-Now I have enough information to generate the Markdown document with architecture analysis:
+● Count Java files
+  $ find ./source-code/src/main/java -type f -name "*.java" | wc -l
+  └ 2 lines...
+
+● List model classes
+  $ ls ./source-code/src/main/java/org/springframework/samples/petclinic/model/
+  └ 2 lines...
+
+● List owner package classes
+  $ ls ./source-code/src/main/java/org/springframework/samples/petclinic/owner/
+  └ 3 lines...
+
+● List vet package classes
+  $ ls ./source-code/src/main/java/org/springframework/samples/petclinic/vet/
+  └ 2 lines...
+
+● List directory source-code/src/main/resources
+  └ 14 files found
+
+● View main application class
+  $ head -30
+  ./source-code/src/main/java/org/springframework/samples/petclinic/PetClinicApplication.java
+  └ 30 lines...
 
 ```markdown
 ---
@@ -44,262 +47,141 @@ id: arquitectura
 title: Arquitectura
 ---
 
-# Arquitectura de Spring PetClinic
+## Descripción General
 
-## Visión General
+PetClinic es una aplicación Spring Boot que implementa un sistema de gestión de clínica veterinaria. La arquitectura sigue patrones de arquitectura por capas con una clara separación de responsabilidades entre el modelo de datos, la lógica de negocio y la presentación.
 
-Spring PetClinic es una aplicación de ejemplo basada en Spring Boot que demuestra las mejores prácticas en el desarrollo de aplicaciones web Java. La aplicación es una clínica veterinaria que gestiona propietarios de mascotas, mascotas, veterinarios y citas médicas.
+## Stack Tecnológico
 
-**Stack Tecnológico:**
-- **Framework:** Spring Boot 2.7.1
-- **Build:** Maven o Gradle
-- **Base de Datos:** H2 (por defecto), MySQL, PostgreSQL
-- **Java:** 1.8 o superior
-- **Frontend:** Thymeleaf, Bootstrap 5.1.3
+- **Framework**: Spring Boot 2.7.1
+- **Lenguaje**: Java
+- **Gestión de dependencias**: Maven
+- **Base de Datos**: Soporta múltiples bases de datos (H2, MySQL, PostgreSQL)
+- **Versionado**: spring-petclinic 2.7.1-SNAPSHOT
 
-## Estructura del Proyecto
+## Estructura de Paquetes
 
+### Paquete Principal
 ```
-src/main/java/org/springframework/samples/petclinic/
-├── model/                 # Entidades base
-├── owner/                # Gestión de propietarios y mascotas
-├── vet/                  # Gestión de veterinarios
-└── system/               # Configuración y controladores de sistema
+org.springframework.samples.petclinic
 ```
 
-## Componentes Principales
+### Paquetes Funcionales
 
-### 1. Capa de Modelos
+#### Model
+Contiene las entidades base del dominio:
+- `BaseEntity`: Clase base para todas las entidades con identificadores
+- `NamedEntity`: Clase base para entidades con nombre
+- `Person`: Entidad que representa una persona
 
-**Paquete: `model`**
+Estas clases forman la jerarquía de herencia del modelo de datos.
 
-- **`BaseEntity`**: Clase base para todas las entidades con identificador único
-- **`NamedEntity`**: Extiende BaseEntity, añade propiedad `name`
-- **`Person`**: Modelo abstracto para personas (Propietarios y Veterinarios)
+#### Owner
+Gestiona la funcionalidad relacionada con propietarios de mascotas:
+- `Owner`: Entidad que representa un propietario
+- `OwnerRepository`: Acceso a datos para propietarios
+- `OwnerController`: Controlador web para operaciones de propietarios
+- `Pet`: Entidad que representa una mascota
+- `PetType`: Clasificación de tipos de mascotas
+- `PetController`: Controlador web para operaciones de mascotas
+- `PetTypeFormatter`: Formateador personalizado para tipos de mascotas
+- `PetValidator`: Validador para datos de mascotas
+- `Visit`: Entidad que representa una visita a la clínica
+- `VisitController`: Controlador web para operaciones de visitas
 
-### 2. Módulo Owner (Propietarios y Mascotas)
+#### Vet
+Gestiona la funcionalidad relacionada con veterinarios:
+- `Vet`: Entidad que representa un veterinario
+- `VetRepository`: Acceso a datos para veterinarios
+- `VetController`: Controlador web para operaciones de veterinarios
+- `Specialty`: Entidad que representa una especialidad veterinaria
+- `Vets`: Contenedor para colecciones de veterinarios
 
-**Paquete: `owner`**
+#### System
+Gestiona funcionalidades del sistema:
+- `CrashController`: Controlador para manejo de errores y excepciones
 
-**Entidades:**
-- **`Owner`**: Propietario de mascotas
-  - Atributos: id, firstName, lastName, address, city, telephone
-  - Relaciones: OneToMany con Pet
+## Arquitectura por Capas
 
-- **`Pet`**: Mascota
-  - Atributos: id, name, birthDate, type_id, owner_id
-  - Relaciones: ManyToOne con Owner, ManyToOne con PetType
+### Capa de Presentación (Controllers)
+Los controladores manejan las solicitudes HTTP y coordinan con la lógica de negocio:
+- `OwnerController`: Gestiona solicitudes relacionadas con propietarios
+- `PetController`: Gestiona solicitudes relacionadas con mascotas
+- `VisitController`: Gestiona solicitudes de visitas
+- `VetController`: Gestiona solicitudes de veterinarios
 
-- **`Visit`**: Cita veterinaria
-  - Atributos: id, visitDate, description
-  - Relaciones: ManyToOne con Pet
+### Capa de Lógica de Negocio (Service)
+Implementa la lógica de la aplicación y orquesta operaciones del dominio.
 
-- **`PetType`**: Tipos de mascotas (Perro, Gato, etc.)
+### Capa de Acceso a Datos (Repository)
+Proporciona abstracción para acceder a datos:
+- `OwnerRepository`: Interfaz de repositorio para propietarios
+- `VetRepository`: Interfaz de repositorio para veterinarios
 
-**Componentes:**
-- **`OwnerRepository`**: Acceso a datos para propietarios
-- **`OwnerController`**: Controlador REST para operaciones CRUD de propietarios
-- **`PetController`**: Controlador para gestión de mascotas
-- **`VisitController`**: Controlador para citas médicas
-- **`PetTypeFormatter`**: Formateador de tipos de mascotas
-- **`PetValidator`**: Validador de datos de mascotas
-
-### 3. Módulo Vet (Veterinarios)
-
-**Paquete: `vet`**
-
-**Entidades:**
-- **`Vet`**: Veterinario
-  - Atributos: id, firstName, lastName
-  - Relaciones: ManyToMany con Specialty
-
-- **`Specialty`**: Especialidades veterinarias
-  - Atributos: id, name
-
-**Componentes:**
-- **`VetRepository`**: Acceso a datos para veterinarios
-- **`VetController`**: Controlador REST para veterinarios
-- **`Vets`**: Contenedor de lista de veterinarios
-
-### 4. Sistema
-
-**Paquete: `system`**
-
-- **`WelcomeController`**: Página de inicio
-- **`CrashController`**: Controlador de errores para demostración
-- **`CacheConfiguration`**: Configuración de caché de la aplicación
-
-## Modelo de Datos
-
-### Diagrama de Relaciones
+### Capa de Modelo (Model)
+Define las entidades del dominio con una jerarquía clara:
 
 ```
-┌──────────────┐           ┌─────────────┐
-│    OWNERS    │───────────│    PETS     │
-│──────────────│  1 : N    │─────────────│
-│ id (PK)      │           │ id (PK)     │
-│ first_name   │           │ name        │
-│ last_name    │           │ birth_date  │
-│ address      │           │ type_id (FK)│
-│ city         │           │ owner_id(FK)│
-│ telephone    │           └─────────────│
-└──────────────┘                 │
-                                 │ 1 : N
-                            ┌─────────────┐
-                            │   VISITS    │
-                            │─────────────│
-                            │ id (PK)     │
-                            │ pet_id (FK) │
-                            │ visit_date  │
-                            │ description │
-                            └─────────────┘
-
-┌──────────────┐           ┌──────────────┐
-│    VETS      │───────────│ SPECIALTIES  │
-│──────────────│  N : N    │──────────────│
-│ id (PK)      │           │ id (PK)      │
-│ first_name   │           │ name         │
-│ last_name    │           └──────────────┘
-└──────────────┘
-
-┌──────────────┐
-│    TYPES     │
-│──────────────│
-│ id (PK)      │
-│ name         │
-└──────────────┘
-```
-
-### Tablas Principales
-
-| Tabla | Descripción | Índices |
-|-------|-------------|---------|
-| `owners` | Propietarios de mascotas | last_name |
-| `pets` | Mascotas | name |
-| `visits` | Citas veterinarias | pet_id |
-| `vets` | Veterinarios | last_name |
-| `specialties` | Especialidades | name |
-| `types` | Tipos de mascotas | name |
-| `vet_specialties` | Relación veterinario-especialidad | - |
-
-## Flujo de Solicitudes
-
-### Caso de Uso: Ver Mascotas de un Propietario
-
-```
-1. Cliente (Browser)
-        ↓
-2. OwnerController.showOwner(id)
-        ↓
-3. OwnerRepository.findById(id)
-        ↓
-4. Base de Datos (H2/MySQL/PostgreSQL)
-        ↓
-5. Owner + Pets (Lazy Loaded)
-        ↓
-6. Vista Thymeleaf (owner_detail.html)
-        ↓
-7. Respuesta HTML al Cliente
+BaseEntity (id)
+  ├── NamedEntity (name)
+  │   ├── PetType
+  │   ├── Specialty
+  │   └── Vet
+  └── Person (firstName, lastName)
+      ├── Owner (address, city, telephone)
+      └── Pet (birthDate, type)
+          └── Visit (date, description)
 ```
 
 ## Configuración
 
-### Perfiles de Base de Datos
+La aplicación utiliza archivos de propiedades para la configuración:
+- `application.properties`: Configuración por defecto
+- `application-mysql.properties`: Configuración específica para MySQL
+- `application-postgres.properties`: Configuración específica para PostgreSQL
 
-La aplicación soporta múltiples bases de datos mediante perfiles de Spring:
+## Recursos
 
-- **`default`** (h2): Base de datos en memoria H2
-- **`mysql`**: MySQL con conexión persistente
-- **`postgres`**: PostgreSQL con conexión persistente
+La aplicación incluye:
+- Archivos estáticos en `/static`
+- Templates en `/templates`
+- Mensajes internacionalizados en `/messages` con soporte para inglés, español y alemán
+- Base de datos embebida en `/db` para desarrollo y pruebas
 
-**Cambiar perfil:**
-```bash
-./mvnw spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=postgres"
-```
+## Componentes Principales
 
-### Caché
+| Componente | Propósito |
+|-----------|-----------|
+| `PetClinicApplication` | Punto de entrada de la aplicación Spring Boot |
+| `OwnerController` | Gestiona operaciones CRUD de propietarios |
+| `PetController` | Gestiona operaciones CRUD de mascotas |
+| `VisitController` | Gestiona operaciones de visitas |
+| `VetController` | Proporciona información de veterinarios |
+| `PetValidator` | Valida datos de mascotas |
+| `PetTypeFormatter` | Formatea tipos de mascotas para la presentación |
 
-El sistema implementa caché de Spring para optimizar consultas frecuentes:
-- Especialidades de veterinarios
-- Tipos de mascotas
+## Flujo de Datos
 
-**Configuración:** `CacheConfiguration.java`
+1. Las solicitudes HTTP llegan a través de los Controllers
+2. Los Controllers invocan servicios de lógica de negocio
+3. Los Servicios utilizan Repositories para acceder a datos
+4. Los Repositories interactúan con la base de datos a través del ORM
+5. Los datos se retornan a través de las capas para su presentación
 
-## Dependencias Principales
+## Validación
 
-```xml
-<!-- Spring Boot Web -->
-spring-boot-starter-web
+El sistema implementa validación en múltiples niveles:
+- Validadores especializados como `PetValidator`
+- Anotaciones de validación en las entidades del modelo
+- Validación en la capa de presentación
 
-<!-- Spring Data JPA -->
-spring-boot-starter-data-jpa
+## Internacionalización
 
-<!-- Caché -->
-spring-boot-starter-cache
+La aplicación soporta múltiples idiomas:
+- Inglés (English)
+- Español (Español)
+- Alemán (Deutsch)
 
-<!-- Actuator -->
-spring-boot-starter-actuator
-
-<!-- Frontend -->
-WebJars Bootstrap 5.1.3
-WebJars Font Awesome 4.7.0
-Thymeleaf
-
-<!-- Testing -->
-spring-boot-starter-test
-```
-
-## Patrones de Diseño
-
-1. **Repository Pattern**: `OwnerRepository`, `VetRepository` para acceso a datos
-2. **MVC Pattern**: Controladores, Vistas (Thymeleaf), Modelos
-3. **Dependency Injection**: Inyección de dependencias de Spring
-4. **Formatter Pattern**: `PetTypeFormatter` para formatos personalizados
-5. **Validator Pattern**: Validación de datos con `PetValidator`
-
-## Seguridad y Validación
-
-- Validación de datos en capas de modelo y controlador
-- Manejo de excepciones centralizado
-- Actuator expuesto para monitoreo
-
-## Puntos de Entrada
-
-- **Aplicación:** `PetClinicApplication.java`
-- **Puerto:** 8080
-- **URL Base:** `http://localhost:8080/`
-- **H2 Console:** `http://localhost:8080/h2-console` (solo con perfil h2)
-
-## Build y Ejecución
-
-### Con Maven
-```bash
-./mvnw package
-java -jar target/*.jar
-```
-
-### Con Gradle
-```bash
-./gradlew build
-java -jar build/libs/*.jar
-```
-
-### Desarrollo
-```bash
-./mvnw spring-boot:run
-```
-
-## Extensibilidad
-
-La arquitectura de PetClinic está diseñada para ser extensible:
-
-- Agregar nuevas entidades siguiendo el patrón Entity/Repository/Controller
-- Implementar nuevas especialidades en el módulo vet
-- Extender funcionalidades de Owner y Pet
-- Agregar nuevas bases de datos modificando perfiles
-
-## Conclusión
-
-Spring PetClinic demuestra una arquitectura limpia y bien estructurada basada en Spring Boot, con separación clara de responsabilidades, patrones de diseño consolidados y facilidad de extensión.
+Los mensajes se configuran mediante archivos de propiedades en `/messages`.
 ```
 

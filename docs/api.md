@@ -1,9 +1,13 @@
-● List directory source-code/src/main/java
-  └ 7 files found
+● List directory .
+  └ 8 files found
 
-● Find Java source files
+● Find Java files in source code
   $ find ./source-code/src/main/java -type f -name "*.java" | head -20
   └ 21 lines...
+
+● Explore directory structure
+  $ find ./source-code/src/main/java -type d | head -20
+  └ 10 lines...
 
 ● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/OwnerController.java
   └ 172 lines read
@@ -17,284 +21,276 @@
 ● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/VisitController.java
   └ 98 lines read
 
+Now I'll generate the MDX-compatible API reference document:
+
 ```markdown
 ---
 id: api
 title: Endpoints
 ---
 
-# Pet Clinic API Reference
+## PetClinic API Reference
 
-API endpoints documentation for the Pet Clinic application.
+Referencia de endpoints de la aplicación PetClinic Spring.
 
-## Owners
+### Gestión de Propietarios
 
-### Get All Owners
-
-```
-GET /owners
-```
-
-Returns a paginated list of all owners, optionally filtered by last name.
-
-**Parameters:**
-- `page` (optional, default: 1) - Page number for pagination
-- `lastName` (optional) - Filter by owner's last name
-
-**Response:** HTML page with owners list
-
----
-
-### Create New Owner
+#### Crear Propietario
 
 ```
 GET /owners/new
 ```
 
-Display the form to create a new owner.
+Muestra el formulario para crear un nuevo propietario.
 
-**Response:** Owner creation form page
+**Respuesta:** Renderiza `owners/createOrUpdateOwnerForm`
 
 ```
 POST /owners/new
 ```
 
-Submit a new owner.
+Procesa la creación de un nuevo propietario.
 
-**Request Body:**
-- Owner object with name, address, phone, and city fields
+**Parámetros:**
+- `owner` (body, requerido): Objeto Owner con validación
 
-**Response:** Redirects to owner details page if successful, or back to form if validation fails
+**Respuestas:**
+- Validación correcta: Redirige a `/owners/{id}`
+- Errores de validación: Retorna formulario con errores
 
----
-
-### Find Owner Form
+#### Buscar Propietarios
 
 ```
 GET /owners/find
 ```
 
-Display the owner search form.
+Muestra el formulario de búsqueda de propietarios.
 
-**Response:** Owner search form page
-
----
-
-### View Owner Details
+**Respuesta:** Renderiza `owners/findOwners`
 
 ```
-GET /owners/{ownerId}
+GET /owners
 ```
 
-Display details for a specific owner including their pets and visits.
+Procesa búsqueda de propietarios por apellido.
 
-**Parameters:**
-- `ownerId` (path) - The ID of the owner
+**Parámetros de consulta:**
+- `page` (opcional, predeterminado: 1): Número de página
+- `owner.lastName` (opcional): Apellido del propietario
 
-**Response:** Owner details page
+**Respuestas:**
+- Resultados encontrados: Renderiza lista paginada (`owners/ownersList`)
+- Un resultado: Redirige a detalles del propietario
+- Sin resultados: Retorna formulario con error
 
----
-
-### Update Owner
+#### Actualizar Propietario
 
 ```
 GET /owners/{ownerId}/edit
 ```
 
-Display the form to edit an owner.
+Muestra el formulario para editar un propietario.
 
-**Parameters:**
-- `ownerId` (path) - The ID of the owner
+**Parámetros de ruta:**
+- `ownerId` (requerido): ID del propietario
 
-**Response:** Owner edit form page
+**Respuesta:** Renderiza `owners/createOrUpdateOwnerForm`
 
 ```
 POST /owners/{ownerId}/edit
 ```
 
-Submit updated owner information.
+Procesa la actualización de un propietario.
 
-**Parameters:**
-- `ownerId` (path) - The ID of the owner
+**Parámetros de ruta:**
+- `ownerId` (requerido): ID del propietario
 
-**Request Body:**
-- Owner object with updated fields
+**Parámetros:**
+- `owner` (body, requerido): Objeto Owner con validación
 
-**Response:** Redirects to owner details page if successful, or back to form if validation fails
+**Respuestas:**
+- Validación correcta: Redirige a `/owners/{ownerId}`
+- Errores de validación: Retorna formulario con errores
 
----
+#### Ver Detalles del Propietario
 
-## Pets
+```
+GET /owners/{ownerId}
+```
 
-### Create New Pet
+Obtiene los detalles de un propietario específico.
+
+**Parámetros de ruta:**
+- `ownerId` (requerido): ID del propietario
+
+**Respuesta:** Renderiza `owners/ownerDetails` con datos del propietario
+
+### Gestión de Mascotas
+
+#### Crear Mascota
 
 ```
 GET /owners/{ownerId}/pets/new
 ```
 
-Display the form to create a new pet for an owner.
+Muestra el formulario para crear una nueva mascota.
 
-**Parameters:**
-- `ownerId` (path) - The ID of the owner
+**Parámetros de ruta:**
+- `ownerId` (requerido): ID del propietario
 
-**Response:** Pet creation form page
+**Respuesta:** Renderiza `pets/createOrUpdatePetForm`
 
 ```
 POST /owners/{ownerId}/pets/new
 ```
 
-Submit a new pet for an owner.
+Procesa la creación de una nueva mascota.
 
-**Parameters:**
-- `ownerId` (path) - The ID of the owner
+**Parámetros de ruta:**
+- `ownerId` (requerido): ID del propietario
 
-**Request Body:**
-- Pet object with name, birth date, and type
+**Parámetros:**
+- `pet` (body, requerido): Objeto Pet con validación
+- `owner` (modelo): Propietario asociado
 
-**Response:** Redirects to owner details page if successful, or back to form if validation fails
+**Respuestas:**
+- Validación correcta: Redirige a `/owners/{ownerId}`
+- Nombre duplicado: Retorna formulario con error
+- Errores de validación: Retorna formulario con errores
 
----
-
-### Edit Pet
+#### Actualizar Mascota
 
 ```
 GET /owners/{ownerId}/pets/{petId}/edit
 ```
 
-Display the form to edit a pet.
+Muestra el formulario para editar una mascota.
 
-**Parameters:**
-- `ownerId` (path) - The ID of the owner
-- `petId` (path) - The ID of the pet
+**Parámetros de ruta:**
+- `ownerId` (requerido): ID del propietario
+- `petId` (requerido): ID de la mascota
 
-**Response:** Pet edit form page
+**Respuesta:** Renderiza `pets/createOrUpdatePetForm`
 
 ```
 POST /owners/{ownerId}/pets/{petId}/edit
 ```
 
-Submit updated pet information.
+Procesa la actualización de una mascota.
 
-**Parameters:**
-- `ownerId` (path) - The ID of the owner
-- `petId` (path) - The ID of the pet
+**Parámetros de ruta:**
+- `ownerId` (requerido): ID del propietario
+- `petId` (requerido): ID de la mascota
 
-**Request Body:**
-- Pet object with updated fields
+**Parámetros:**
+- `pet` (body, requerido): Objeto Pet con validación
+- `owner` (modelo): Propietario asociado
 
-**Response:** Redirects to owner details page if successful, or back to form if validation fails
+**Respuestas:**
+- Validación correcta: Redirige a `/owners/{ownerId}`
+- Errores de validación: Retorna formulario con errores
 
----
+### Gestión de Visitas
 
-## Visits
-
-### Create New Visit
+#### Crear Visita
 
 ```
 GET /owners/{ownerId}/pets/{petId}/visits/new
 ```
 
-Display the form to create a new visit record for a pet.
+Muestra el formulario para crear una nueva visita.
 
-**Parameters:**
-- `ownerId` (path) - The ID of the owner
-- `petId` (path) - The ID of the pet
+**Parámetros de ruta:**
+- `ownerId` (requerido): ID del propietario
+- `petId` (requerido): ID de la mascota
 
-**Response:** Visit creation form page
+**Respuesta:** Renderiza `pets/createOrUpdateVisitForm`
 
 ```
 POST /owners/{ownerId}/pets/{petId}/visits/new
 ```
 
-Submit a new visit record for a pet.
+Procesa la creación de una nueva visita.
 
-**Parameters:**
-- `ownerId` (path) - The ID of the owner
-- `petId` (path) - The ID of the pet
+**Parámetros de ruta:**
+- `ownerId` (requerido): ID del propietario
+- `petId` (requerido): ID de la mascota
 
-**Request Body:**
-- Visit object with date and description
+**Parámetros:**
+- `visit` (body, requerido): Objeto Visit con validación
+- `owner` (modelo): Propietario asociado
 
-**Response:** Redirects to owner details page if successful, or back to form if validation fails
+**Respuestas:**
+- Validación correcta: Redirige a `/owners/{ownerId}`
+- Errores de validación: Retorna formulario con errores
 
----
+### Gestión de Veterinarios
 
-## Veterinarians
-
-### List All Vets (HTML)
+#### Listar Veterinarios (HTML)
 
 ```
 GET /vets.html
 ```
 
-Display a paginated list of all veterinarians.
+Obtiene la lista paginada de veterinarios en formato HTML.
 
-**Parameters:**
-- `page` (optional, default: 1) - Page number for pagination
+**Parámetros de consulta:**
+- `page` (opcional, predeterminado: 1): Número de página
 
-**Response:** Veterinarians list page with pagination
+**Respuesta:** Renderiza `vets/vetList` con lista paginada
 
----
-
-### List All Vets (JSON/XML)
+#### Listar Veterinarios (JSON/XML)
 
 ```
 GET /vets
 ```
 
-Return a list of all veterinarians in JSON or XML format.
+Obtiene la lista completa de veterinarios en formato JSON.
 
-**Response:**
+**Respuesta:** Retorna objeto JSON con lista de veterinarios
+
 ```json
 {
   "vetList": [
     {
       "id": 1,
-      "firstName": "James",
-      "lastName": "Carter",
-      "specialties": ["radiology"]
+      "firstName": "string",
+      "lastName": "string",
+      "specialties": []
     }
   ]
 }
 ```
 
-**Response Format:** JSON (with @ResponseBody)
+## Validación de Datos
 
----
+### Propietario (Owner)
 
-## Data Models
+- El campo `id` no puede ser modificado directamente
 
-### Owner
-- `id` - Unique identifier
-- `firstName` - Owner's first name
-- `lastName` - Owner's last name
-- `address` - Street address
-- `city` - City
-- `telephone` - Phone number
-- `pets` - Collection of pets owned
+### Mascota (Pet)
 
-### Pet
-- `id` - Unique identifier
-- `name` - Pet's name
-- `birthDate` - Birth date
-- `type` - Pet type (dog, cat, etc.)
-- `owner` - Reference to owner
-- `visits` - Collection of visit records
+- La mascota requiere validación personalizada mediante `PetValidator`
+- El campo `id` no puede ser modificado directamente para el propietario
 
-### Visit
-- `id` - Unique identifier
-- `date` - Date of visit
-- `description` - Description of visit
-- `pet` - Reference to pet
+### Visita (Visit)
 
-### Veterinarian
-- `id` - Unique identifier
-- `firstName` - Vet's first name
-- `lastName` - Vet's last name
-- `specialties` - Collection of specialties
+- El campo `id` no puede ser modificado directamente
+- Los campos de visita están sujetos a validación
 
-### Pet Type
-- `id` - Unique identifier
-- `name` - Type name (dog, cat, hamster, etc.)
+## Paginación
+
+La paginación utiliza los siguientes parámetros:
+
+- `page`: Número de página (comienza en 1)
+- `pageSize`: 5 registros por página
+- Atributos de respuesta: `currentPage`, `totalPages`, `totalItems`
+
+## Notas de Implementación
+
+- Todos los endpoints de propietarios y mascotas utilizan controladores Spring MVC
+- Las mascotas están asociadas a propietarios específicos
+- Las visitas están asociadas a mascotas específicas de un propietario
+- La paginación está disponible para listados de propietarios y veterinarios
 ```
 
