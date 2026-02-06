@@ -41,7 +41,7 @@ jobs:
           # Esto nos dirá si el token está presente (debería imprimir '81' o similar, no el token)
           echo "Longitud del token: ${#COPILOT_GITHUB_TOKEN}"
 
-      # 5. GENERACIÓN CON IA (Versión compatible con MDX)
+      # 5. GENERACIÓN CON IA + LIMPIEZA AUTOMÁTICA PARA MDX
       - name: Generate AI Content
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
@@ -49,14 +49,26 @@ jobs:
         run: |
           mkdir -p ./docs-repo/docs
           
-          # Instrucción clave: "Strictly avoid unescaped curly braces"
-          
           echo "Generando arquitectura.md..."
-          copilot -p "Analiza el directorio ./source-code y genera un archivo Markdown para Docusaurus. Incluye Frontmatter (id: arquitectura, title: Arquitectura). IMPORTANTE: El archivo debe ser compatible con MDX. No uses llaves {} fuera de bloques de código. Si necesitas mostrar variables, usa el formato \`variable\`. Responde solo con el Markdown puro." > ./docs-repo/docs/arquitectura.md
+          copilot -p "Genera arquitectura.md para Docusaurus de ./source-code. Responde solo el Markdown puro." > ./docs-repo/docs/arquitectura.md
       
           echo "Generando api.md..."
-          copilot -p "Analiza ./source-code/src/main/java y genera referencia de API para Docusaurus (id: api, title: Endpoints). IMPORTANTE: El archivo debe ser compatible con MDX de Docusaurus 3. Evita el uso de llaves {} en el texto normal para evitar ReferenceErrors. Usa bloques de código estrictos. Responde solo con el Markdown puro." > ./docs-repo/docs/api.md
+          copilot -p "Genera referencia de API para Docusaurus de ./source-code/src/main/java. Responde solo el Markdown puro." > ./docs-repo/docs/api.md
 
+          # --- EL TRUCO MAESTRO PARA MDX ---
+          # Buscamos llaves que NO estén ya escapadas y las escapamos.
+          # Esto evita que Docusaurus intente ejecutarlas como JavaScript.
+          echo "Escapando caracteres especiales para MDX..."
+          sed -i 's/{/\\{/g' ./docs-repo/docs/*.md
+          sed -i 's/}/\\}/g' ./docs-repo/docs/*.md
+          
+          # Caso especial: Si la IA puso llaves dentro de bloques de código backtick ``, 
+          # el comando anterior podría haberlas roto. Las restauramos en bloques simples.
+          # (Opcional, pero recomendado si ves errores en código resaltado)
+          sed -i 's/`\\{/`{/g' ./docs-repo/docs/*.md
+          sed -i 's/\\}`/}/g' ./docs-repo/docs/*.md
+
+          
       # 6. Guardar los archivos generados
       - name: Commit and Push AI Docs
         run: |
