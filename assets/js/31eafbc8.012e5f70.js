@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunktemp_docs=globalThis.webpackChunktemp_docs||[]).push([[6352],{6944(t){t.exports=JSON.parse('{"metadata":{"permalink":"/petclinic-documentation/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":4,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);

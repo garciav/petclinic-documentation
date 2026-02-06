@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunktemp_docs=globalThis.webpackChunktemp_docs||[]).push([[1903],{1912(t){t.exports=JSON.parse('{"blogBasePath":"/petclinic-documentation/blog","blogTitle":"Blog","authorsListPath":"/petclinic-documentation/blog/authors"}')}}]);
