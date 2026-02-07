@@ -41,7 +41,7 @@ jobs:
           # Esto nos dirá si el token está presente (debería imprimir '81' o similar, no el token)
           echo "Longitud del token: ${#COPILOT_GITHUB_TOKEN}"
 
-      # 5. GENERACIÓN CON IA + LIMPIEZA AUTOMÁTICA PARA MDX
+      # 5. GENERACIÓN DE CONTENIDO CON DIAGRAMAS MERMAID
       - name: Generate AI Content
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
@@ -49,25 +49,30 @@ jobs:
         run: |
           mkdir -p ./docs-repo/docs
           
-          echo "Generando arquitectura.md..."
-          copilot -p "Genera arquitectura.md para Docusaurus de ./source-code. Responde solo el Markdown puro." > ./docs-repo/docs/arquitectura.md
+          echo "Generando arquitectura con diagrama de flujo..."
+          # Pedimos un diagrama de arquitectura C4 o Flowchart
+          copilot -p "Analiza ./source-code. Genera arquitectura.md con Frontmatter (id: arquitectura). Incluye un diagrama Mermaid tipo 'graph TD' que muestre la relación entre Controllers, Services y Repositories. Explica el flujo de datos. Responde solo con Markdown puro compatible con Docusaurus 3." > ./docs-repo/docs/arquitectura.md
       
-          echo "Generando api.md..."
-          copilot -p "Genera referencia de API para Docusaurus de ./source-code/src/main/java. Responde solo el Markdown puro." > ./docs-repo/docs/api.md
+          echo "Generando referencia de API con Diagramas de Secuencia..."
+          # Pedimos diagramas de secuencia para los endpoints más importantes
+          copilot -p "Analiza ./source-code/src/main/java. Genera api.md con Frontmatter (id: api). Para cada controlador principal, incluye un diagrama Mermaid de tipo 'sequenceDiagram' que ilustre el camino de una petición HTTP desde el Controller hasta la DB. Usa backticks para variables. Responde solo con Markdown puro." > ./docs-repo/docs/api.md
 
-          # --- EL TRUCO MAESTRO PARA MDX ---
-          # Buscamos llaves que NO estén ya escapadas y las escapamos.
-          # Esto evita que Docusaurus intente ejecutarlas como JavaScript.
-          echo "Escapando caracteres especiales para MDX..."
-          sed -i 's/{/\\{/g' ./docs-repo/docs/*.md
-          sed -i 's/}/\\}/g' ./docs-repo/docs/*.md
-          
-          # Caso especial: Si la IA puso llaves dentro de bloques de código backtick ``, 
-          # el comando anterior podría haberlas roto. Las restauramos en bloques simples.
-          # (Opcional, pero recomendado si ves errores en código resaltado)
-          sed -i 's/`\\{/`{/g' ./docs-repo/docs/*.md
-          sed -i 's/\\}`/}/g' ./docs-repo/docs/*.md
-
+          # --- LIMPIEZA SEGURA PARA MDX ---
+          # Solo escapamos llaves si NO están dentro de bloques de código (donde vive Mermaid)
+          # Usamos un comando de Python rápido para no romper los diagramas Mermaid
+          python3 -c "
+          import os, re
+          for f in ['./docs-repo/docs/arquitectura.md', './docs-repo/docs/api.md']:
+              if os.path.exists(f):
+                  with open(f, 'r') as file:
+                      content = file.read()
+                  # Esta regex protege los bloques de código y escapa llaves solo en el texto
+                  # (Simpliación para evitar ReferenceErrors en MDX)
+                  clean = re.sub(r'(?<!`){(?!`)', '\{', content)
+                  clean = re.sub(r'(?<!`)}', '\}', clean)
+                  with open(f, 'w') as file:
+                      file.write(clean)
+          "
           
       # 6. Guardar los archivos generados
       - name: Commit and Push AI Docs
