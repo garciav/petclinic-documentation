@@ -41,7 +41,7 @@ jobs:
           # Esto nos dirá si el token está presente (debería imprimir '81' o similar, no el token)
           echo "Longitud del token: ${#COPILOT_GITHUB_TOKEN}"
 
-# 5. GENERACIÓN CON IA + LIMPIEZA MDX SEGURA
+      # 5. GENERACIÓN CON IA + ESCUDO ANTI-JSX (Protección de < > y { })
       - name: Generate AI Content
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
@@ -49,14 +49,13 @@ jobs:
         run: |
           mkdir -p ./docs-repo/docs
           
-          echo "Generando arquitectura con diagramas..."
-          copilot -p "Genera arquitectura.md para Docusaurus de ./source-code. Incluye un diagrama Mermaid 'graph TD' del flujo Controller-Service-Repo. Responde solo Markdown puro." > ./docs-repo/docs/arquitectura.md
+          echo "Generando arquitectura..."
+          copilot -p "Genera arquitectura.md para Docusaurus de ./source-code. Incluye diagramas Mermaid. Responde solo Markdown puro." > ./docs-repo/docs/arquitectura.md
       
-          echo "Generando API con diagramas de secuencia..."
-          copilot -p "Genera api.md para Docusaurus de ./source-code/src/main/java. Incluye diagramas Mermaid 'sequenceDiagram'. Responde solo Markdown puro." > ./docs-repo/docs/api.md
+          echo "Generando API..."
+          copilot -p "Genera api.md para Docusaurus de ./source-code/src/main/java. Responde solo Markdown puro." > ./docs-repo/docs/api.md
 
-          echo "Ejecutando script de limpieza MDX..."
-          # Usamos un Heredoc (<< 'EOF') para evitar problemas de comillas en Bash
+          echo "Ejecutando Escudo Anti-JSX para MDX..."
           python3 << 'EOF'
           import os, re
           files = ['./docs-repo/docs/arquitectura.md', './docs-repo/docs/api.md']
@@ -65,17 +64,21 @@ jobs:
                   with open(file_path, 'r', encoding='utf-8') as f:
                       content = f.read()
                   
-                  # Escapamos llaves que NO estén dentro de bloques de código (```)
-                  # Esto evita el ReferenceError en Docusaurus/MDX
-                  def escape_braces(match):
+                  def protect_mdx(match):
                       block = match.group(0)
+                      # Si es un bloque de código (```), lo dejamos EXACTAMENTE igual
                       if block.startswith('```'):
-                          return block # No tocar bloques de código
-                      # Escapar llaves fuera de bloques
-                      return block.replace('{', '\{').replace('}', '\}')
+                          return block
+                      
+                      # En el texto normal, escapamos los caracteres que rompen MDX
+                      # Reemplazamos < por &lt; y > por &gt; (entidades HTML seguras)
+                      # También escapamos las llaves { }
+                      text = block.replace('{', '\{').replace('}', '\}')
+                      text = text.replace('<', '&lt;').replace('>', '&gt;')
+                      return text
 
-                  # Regex que separa bloques de código del resto del texto
-                  clean_content = re.sub(r'(```.*?```|[^`]+)', escape_braces, content, flags=re.DOTALL)
+                  # Esta regex separa el contenido en bloques de código y "todo lo demás"
+                  clean_content = re.sub(r'(```.*?```|[^`]+)', protect_mdx, content, flags=re.DOTALL)
                   
                   with open(file_path, 'w', encoding='utf-8') as f:
                       f.write(clean_content)
