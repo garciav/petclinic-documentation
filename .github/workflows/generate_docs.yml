@@ -41,7 +41,7 @@ jobs:
           # Esto nos dirá si el token está presente (debería imprimir '81' o similar, no el token)
           echo "Longitud del token: ${#COPILOT_GITHUB_TOKEN}"
 
-# 5. GENERACIÓN LIMPIA (Filtro de Logs + Protección Total de Mermaid)
+# 5. GENERACIÓN CON IA (Node 24 + Limpieza Quirúrgica)
       - name: Generate AI Content
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
@@ -49,14 +49,14 @@ jobs:
         run: |
           mkdir -p ./docs-repo/docs
           
-          # 1. GENERACIÓN: Forzamos a la IA a ser breve y técnica
+          # Generación: Instrucciones ultra-estrictas
           echo "Generando arquitectura..."
-          copilot -p "Output ONLY the raw Markdown content for arquitectura.md. DO NOT include logs, searching messages, or internal thoughts. Start directly with the frontmatter. Include a Mermaid 'graph TD' diagram." > ./docs-repo/docs/arquitectura.md
+          copilot -p "Output ONLY raw Markdown for arquitectura.md. No logs, no searching messages. Start with frontmatter. Include Mermaid 'graph TD'." > ./docs-repo/docs/arquitectura.md
       
           echo "Generando API..."
-          copilot -p "Output ONLY the raw Markdown content for api.md. DO NOT include searching logs or conversational text. Focus on technical endpoints and include 'sequenceDiagram' for main flows." > ./docs-repo/docs/api.md
+          copilot -p "Output ONLY raw Markdown for api.md. No logs or conversational text. Include 'sequenceDiagram' for main flows." > ./docs-repo/docs/api.md
 
-          # 2. LIMPIEZA QUIRÚRGICA CON PYTHON
+          # Limpieza Quirúrgica con Python
           echo "Eliminando parloteo y protegiendo diagramas..."
           python3 << 'EOF'
           import os, re
@@ -66,35 +66,33 @@ jobs:
               with open(f_path, 'r', encoding='utf-8') as f:
                   content = f.read()
               
-              # A. ELIMINAR PARLOTEO: Borramos líneas que empiezan con símbolos de log de Copilot
-              # Filtra líneas que empiezan por •, X, Now I'll, $ find, cat >, etc.
+              # 1. Filtro de logs de la IA
               lines = content.split('\n')
               filtered_lines = []
               for line in lines:
                   s_line = line.strip()
-                  if s_line.startswith(('•', 'X ', 'Now I\'ll', '$ ', 'Reading ', 'Found ', 'I will', 'I noticed')):
+                  # Borramos líneas que empiecen con símbolos de log comunes en Copilot
+                  if s_line.startswith(('•', 'X ', 'Now I\'ll', '$ ', 'Reading ', 'Found ', 'I will', 'I noticed', 'Let me')):
                       continue
                   filtered_lines.append(line)
               content = '\n'.join(filtered_lines)
 
-              # B. ESCUDO MDX: Dividimos por bloques de código (```)
-              # Los bloques impares son CÓDIGO (no se tocan), los pares son TEXTO (se limpian)
+              # 2. Escudo MDX: Protegemos bloques de código (```)
               parts = content.split('```')
               new_parts = []
               for i, part in enumerate(parts):
-                  if i % 2 == 0:  # Es TEXTO FUERA de los bloques de código
-                      # Limpiamos solo lo que rompe MDX
+                  if i % 2 == 0:  # TEXTO FUERA de bloques
                       t = part.replace('{', '\{').replace('}', '\}')
                       t = t.replace('<', '&lt;').replace('>', '&gt;')
                       new_parts.append(t)
-                  else:  # Es CÓDIGO o MERMAID (INTOCABLE)
+                  else:  # CÓDIGO o MERMAID (INTOCABLE)
                       # Restauramos posibles flechas que la IA ya haya devuelto mal
                       fixed_code = part.replace('&gt;', '>').replace('&lt;', '<')
                       new_parts.append(fixed_code)
               
               final_output = '```'.join(new_parts)
               
-              # C. RECORTE FINAL: Buscamos el primer '---' por si quedó basura arriba
+              # 3. Recorte de basura inicial: Buscamos el primer '---'
               if '---' in final_output:
                   final_output = '---' + final_output.split('---', 1)[1]
 
