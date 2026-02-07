@@ -41,7 +41,7 @@ jobs:
           # Esto nos dirá si el token está presente (debería imprimir '81' o similar, no el token)
           echo "Longitud del token: ${#COPILOT_GITHUB_TOKEN}"
 
-      # 5. GENERACIÓN CON IA + ESCUDO ANTI-JSX (Protección de < > y { })
+      # 5. GENERACIÓN DE DOCUMENTACIÓN PROFESIONAL (Arquitectura + API)
       - name: Generate AI Content
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
@@ -49,38 +49,53 @@ jobs:
         run: |
           mkdir -p ./docs-repo/docs
           
-          echo "Generando arquitectura..."
-          copilot -p "Genera arquitectura.md para Docusaurus de ./source-code. Incluye diagramas Mermaid. Responde solo Markdown puro." > ./docs-repo/docs/arquitectura.md
+          # --- GENERACIÓN DE ARQUITECTURA ---
+          echo "Generando arquitectura.md..."
+          copilot -p "Actúa como Arquitecto de Software. 
+          Analiza ./source-code y genera arquitectura.md con Frontmatter (id: arquitectura, title: Arquitectura del Sistema).
+          INCLUYE: 
+          1. Un resumen de la pila tecnológica (Spring Boot, Java, etc.).
+          2. Un diagrama Mermaid 'graph TD' que ilustre el flujo: Cliente -> Controller -> Service -> Repository -> Database.
+          3. Explicación de las capas de la aplicación.
+          REGLAS: No incluyas tus logs internos de búsqueda. Responde solo con Markdown puro." > ./docs-repo/docs/arquitectura.md
       
-          echo "Generando API..."
-          copilot -p "Genera api.md para Docusaurus de ./source-code/src/main/java. Responde solo Markdown puro." > ./docs-repo/docs/api.md
+          # --- GENERACIÓN DE API ---
+          echo "Generando api.md..."
+          copilot -p "Actúa como Escritor Técnico. 
+          Analiza ./source-code/src/main/java y genera api.md con Frontmatter (id: api, title: Referencia de API).
+          ESTRUCTURA:
+          1. Introducción a los Endpoints.
+          2. Secciones por Controlador (ej. OwnerController, PetController).
+          3. Para cada endpoint:
+             - Título con [MÉTODO] Ruta.
+             - Tabla con parámetros de entrada (Nombre, Tipo, Requerido).
+             - Un diagrama Mermaid 'sequenceDiagram' que muestre el flujo del mensaje.
+          REGLAS: Prohibido incluir logs de 'leyendo archivo' o errores de permisos. Devuelve solo el Markdown final." > ./docs-repo/docs/api.md
 
-          echo "Ejecutando Escudo Anti-JSX para MDX..."
+          # --- ESCUDO ANTI-JSX (Limpieza MDX) ---
+          echo "Ejecutando limpieza de seguridad para Docusaurus..."
           python3 << 'EOF'
           import os, re
           files = ['./docs-repo/docs/arquitectura.md', './docs-repo/docs/api.md']
-          for file_path in files:
-              if os.path.exists(file_path):
-                  with open(file_path, 'r', encoding='utf-8') as f:
+          for f_path in files:
+              if os.path.exists(f_path):
+                  with open(f_path, 'r', encoding='utf-8') as f:
                       content = f.read()
                   
                   def protect_mdx(match):
                       block = match.group(0)
-                      # Si es un bloque de código (```), lo dejamos EXACTAMENTE igual
+                      # Si es un bloque de código o de Mermaid, no lo tocamos
                       if block.startswith('```'):
                           return block
-                      
-                      # En el texto normal, escapamos los caracteres que rompen MDX
-                      # Reemplazamos < por &lt; y > por &gt; (entidades HTML seguras)
-                      # También escapamos las llaves { }
+                      # En el texto, escapamos caracteres que MDX confunde con código React
                       text = block.replace('{', '\{').replace('}', '\}')
                       text = text.replace('<', '&lt;').replace('>', '&gt;')
                       return text
 
-                  # Esta regex separa el contenido en bloques de código y "todo lo demás"
+                  # Esta regex separa el contenido en bloques de código y texto normal
                   clean_content = re.sub(r'(```.*?```|[^`]+)', protect_mdx, content, flags=re.DOTALL)
                   
-                  with open(file_path, 'w', encoding='utf-8') as f:
+                  with open(f_path, 'w', encoding='utf-8') as f:
                       f.write(clean_content)
           EOF
           
