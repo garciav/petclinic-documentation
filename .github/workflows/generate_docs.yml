@@ -41,7 +41,7 @@ jobs:
           # Esto nos dirá si el token está presente (debería imprimir '81' o similar, no el token)
           echo "Longitud del token: ${#COPILOT_GITHUB_TOKEN}"
 
-      # 5. GENERACIÓN DE DOCUMENTACIÓN PROFESIONAL (Arquitectura + API)
+      # 5. GENERACIÓN LIMPIA (Cero Logs + Protección Total de Mermaid)
       - name: Generate AI Content
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
@@ -49,54 +49,43 @@ jobs:
         run: |
           mkdir -p ./docs-repo/docs
           
-          # --- GENERACIÓN DE ARQUITECTURA ---
-          echo "Generando arquitectura.md..."
-          copilot -p "Actúa como Arquitecto de Software. 
-          Analiza ./source-code y genera arquitectura.md con Frontmatter (id: arquitectura, title: Arquitectura del Sistema).
-          INCLUYE: 
-          1. Un resumen de la pila tecnológica (Spring Boot, Java, etc.).
-          2. Un diagrama Mermaid 'graph TD' que ilustre el flujo: Cliente -> Controller -> Service -> Repository -> Database.
-          3. Explicación de las capas de la aplicación.
-          REGLAS: No incluyas tus logs internos de búsqueda. Responde solo con Markdown puro." > ./docs-repo/docs/arquitectura.md
+          # 1. GENERACIÓN: Instrucciones ultra-estrictas para evitar charlatanería
+          echo "Generando arquitectura..."
+          copilot -p "Output ONLY the raw Markdown content for arquitectura.md. DO NOT include logs, 'reading file' messages, or conversational text. Include a Mermaid 'graph TD' diagram." > ./docs-repo/docs/arquitectura.md
       
-          # --- GENERACIÓN DE API ---
-          echo "Generando api.md..."
-          copilot -p "Actúa como Escritor Técnico. 
-          Analiza ./source-code/src/main/java y genera api.md con Frontmatter (id: api, title: Referencia de API).
-          ESTRUCTURA:
-          1. Introducción a los Endpoints.
-          2. Secciones por Controlador (ej. OwnerController, PetController).
-          3. Para cada endpoint:
-             - Título con [MÉTODO] Ruta.
-             - Tabla con parámetros de entrada (Nombre, Tipo, Requerido).
-             - Un diagrama Mermaid 'sequenceDiagram' que muestre el flujo del mensaje.
-          REGLAS: Prohibido incluir logs de 'leyendo archivo' o errores de permisos. Devuelve solo el Markdown final." > ./docs-repo/docs/api.md
+          echo "Generando API..."
+          copilot -p "Output ONLY the raw Markdown content for api.md. DO NOT include logs or internal thoughts. Focus on endpoints and include 'sequenceDiagram' for main flows." > ./docs-repo/docs/api.md
 
-          # --- ESCUDO ANTI-JSX (Limpieza MDX) ---
-          echo "Ejecutando limpieza de seguridad para Docusaurus..."
+          # 2. LIMPIEZA QUIRÚRGICA: Solo escapamos texto FUERA de los bloques ```
+          echo "Ejecutando limpieza de seguridad (Escudo MDX)..."
           python3 << 'EOF'
           import os, re
           files = ['./docs-repo/docs/arquitectura.md', './docs-repo/docs/api.md']
           for f_path in files:
-              if os.path.exists(f_path):
-                  with open(f_path, 'r', encoding='utf-8') as f:
-                      content = f.read()
-                  
-                  def protect_mdx(match):
-                      block = match.group(0)
-                      # Si es un bloque de código o de Mermaid, no lo tocamos
-                      if block.startswith('```'):
-                          return block
-                      # En el texto, escapamos caracteres que MDX confunde con código React
-                      text = block.replace('{', '\{').replace('}', '\}')
+              if not os.path.exists(f_path): continue
+              with open(f_path, 'r', encoding='utf-8') as f:
+                  parts = f.read().split('```')
+              
+              new_parts = []
+              for i, part in enumerate(parts):
+                  if i % 2 == 0: # Es TEXTO (fuera de bloques de código)
+                      # 1. Eliminamos líneas que parecen logs de la IA (puntos o flechas de lectura)
+                      lines = part.split('\n')
+                      clean_lines = [l for l in lines if not l.strip().startswith(('•', 'X ', 'Now I\'ll', '$ find', '$ cat'))]
+                      text = '\n'.join(clean_lines)
+                      
+                      # 2. Escapamos caracteres que rompen MDX
+                      text = text.replace('{', '\{').replace('}', '\}')
                       text = text.replace('<', '&lt;').replace('>', '&gt;')
-                      return text
-
-                  # Esta regex separa el contenido en bloques de código y texto normal
-                  clean_content = re.sub(r'(```.*?```|[^`]+)', protect_mdx, content, flags=re.DOTALL)
-                  
-                  with open(f_path, 'w', encoding='utf-8') as f:
-                      f.write(clean_content)
+                      new_parts.append(text)
+                  else: # Es CÓDIGO/MERMAID (no tocar nada)
+                      new_parts.append(part)
+              
+              # Reensamblamos y quitamos posibles backticks escapados que a veces pone la IA
+              final_content = '```'.join(new_parts).replace('\\`\\`\\`','```')
+              
+              with open(f_path, 'w', encoding='utf-8') as f:
+                  f.write(final_content)
           EOF
           
       # 6. Guardar los archivos generados
