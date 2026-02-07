@@ -1,752 +1,725 @@
-● List directory .
-  └ 8 files found
+● List directory source-code/src/main/java
+  └ 7 files found
 
-● Explore Java source files
+● Find Java source files
   $ find ./source-code/src/main/java -type f -name "*.java" | head -20
   └ 21 lines...
+
+Now I'll read all the Java files to generate the API documentation:
+
+● Get all Java files sorted
+  $ find ./source-code/src/main/java -type f -name "*.java" | sort
+  └ 24 lines...
 
 ● List directory source-code/src/main/java/org/springframework/samples/petclinic
   └ 11 files found
 
-● Find controller and repository files
-  $ find ./source-code/src/main/java -type f -name "*.java" | grep -E "Controller|Repository" | sort
-  └ 9 lines...
+● Read source-code/src/main/java/org/springframework/samples/petclinic/PetClinicApplication.java
+  └ 40 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/model/BaseEntity.java
+  └ 56 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/model/NamedEntity.java
+  └ 52 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/model/Person.java
+  └ 72 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/Owner.java
+  └ 178 lines read
 
 ● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/OwnerController.java
   └ 172 lines read
 
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/OwnerRepository.java
+  └ 87 lines read
+
 ● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/PetController.java
   └ 120 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/Pet.java
+  └ 89 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/PetType.java
+  └ 35 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/Visit.java
+  └ 73 lines read
 
 ● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/VisitController.java
   └ 98 lines read
 
+● Read source-code/src/main/java/org/springframework/samples/petclinic/vet/Vet.java
+  └ 84 lines read
+
 ● Read source-code/src/main/java/org/springframework/samples/petclinic/vet/VetController.java
   └ 84 lines read
 
-● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/OwnerRepository.java
-  └ 87 lines read
+● Read source-code/src/main/java/org/springframework/samples/petclinic/vet/Specialty.java
+  └ 37 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/vet/Vets.java
+  └ 47 lines read
 
 ● Read source-code/src/main/java/org/springframework/samples/petclinic/vet/VetRepository.java
   └ 63 lines read
 
-● Read source-code/src/main/java/org/springframework/samples/petclinic/system/CrashController.java
-  └ 42 lines read
-
 ● Read source-code/src/main/java/org/springframework/samples/petclinic/system/WelcomeController.java
   └ 35 lines read
 
-Now I'll create the api.md file with comprehensive documentation and Mermaid sequence diagrams:
+● Read source-code/src/main/java/org/springframework/samples/petclinic/system/CrashController.java
+  └ 42 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/system/CacheConfiguration.java
+
+  └ 58 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/PetValidator.java
+  └ 69 lines read
+
+● Read source-code/src/main/java/org/springframework/samples/petclinic/owner/PetTypeFormatter.java
+  └ 67 lines read
+
+Now I'll create the api.md file with all the API documentation:
+
+✗ Generate API documentation content
+  $ cat &gt; /tmp/api_content.md &lt;&lt; 'EOF'
+  ---
+  sidebar_position: 2
+  title: API Reference
+  ---...
+  Permission denied and could not request permission from user
 
 ✗ Create api.md
   Permission denied and could not request permission from user
 
-● Check directory permissions
-  $ ls -la /home/runner/work/petclinic-documentation/petclinic-documentation/
-  └ 6 lines...
-
-✗ Create api.md with full Markdown content
-  $ cat > /home/runner/work/petclinic-documentation/petclinic-documentation/api.md << 'EOF'
-  # API Documentation - PetClinic
-
-  Documentación completa de la API REST y controladores del sistema de gestión de clínica
-  veterinaria PetClinic....
+✗ Check directory permissions
+  $ ls -la /home/runner/work/petclinic-documentation/ | head -20
   Permission denied and could not request permission from user
 
-✗ Check permissions and test write access
-  $ whoami && pwd && touch
-  /home/runner/work/petclinic-documentation/petclinic-documentation/test.txt
-  Permission denied and could not request permission from user
-
-✗ List parent directory
-  $ ls -la /home/runner/work/petclinic-documentation/
-  Permission denied and could not request permission from user
-
-● Check current directory and list
+● Check current directory and permissions
   $ pwd && ls -la
   └ 7 lines...
 
-✗ Create api.md in /tmp
-  $ tee /tmp/api.md << 'EOF'
-  # API Documentation - PetClinic
-
-  Documentación completa de la API REST y controladores del sistema de gestión de clínica
-  veterinaria PetClinic....
+✗ Create api.md file with full content
+  $ cat &gt; api.md &lt;&lt; 'EOF'
+  ---
+  sidebar_position: 2
+  title: API Reference
+  ---...
   Permission denied and could not request permission from user
 
-● Check user
-  $ whoami
-  └ 2 lines...
-
-✗ Test basic write permission
-  $ touch test_write.txt && echo "test" > test_write.txt && cat test_write.txt && rm test_write.txt
+✗ Check write permissions
+  $ whoami && id && touch test.txt && rm test.txt && echo "Permissions OK"
   Permission denied and could not request permission from user
 
-● Check user ID and groups
-  $ id && groups
-  └ 3 lines...
-
-```markdown
-# API Documentation - PetClinic
-
-Documentación completa de la API REST y controladores del sistema de gestión de clínica veterinaria PetClinic.
-
-## Resumen de Módulos
-
-- **Owner**: Gestión de propietarios de mascotas
-- **Pet**: Gestión de mascotas
-- **Visit**: Gestión de citas veterinarias
-- **Vet**: Gestión de veterinarios
-- **System**: Controladores del sistema
+I cannot write to disk due to permission restrictions in this environment. However, here is the complete Markdown content for the api.md file for Docusaurus:
 
 ---
 
-## Owner Module
+```markdown
+---
+sidebar_position: 2
+title: API Reference
+---
 
-### OwnerController
+# PetClinic API Reference
 
-Controlador principal para la gestión de propietarios.
+Complete API documentation for the Spring PetClinic application, covering all domain models, repositories, and controllers.
 
-#### Endpoints
+## Table of Contents
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/owners/new` | Inicializa formulario de creación |
-| POST | `/owners/new` | Procesa creación de propietario |
-| GET | `/owners/find` | Inicializa formulario de búsqueda |
-| GET | `/owners` | Busca propietarios por apellido (con paginación) |
-| GET | `/owners/{ownerId}/edit` | Inicializa formulario de edición |
-| POST | `/owners/{ownerId}/edit` | Procesa actualización de propietario |
-| GET | `/owners/{ownerId}` | Obtiene detalles de un propietario |
+- [Model Classes](#model-classes)
+- [Repository Interfaces](#repository-interfaces)
+- [Controllers](#controllers)
+- [Utilities](#utilities)
 
-#### Métodos Principales
+---
 
-```java
-public String initCreationForm(Map<String, Object> model)
-```
-Inicializa el formulario para crear un nuevo propietario.
+## Model Classes
 
-```java
-public String processCreationForm(@Valid Owner owner, BindingResult result)
-```
-Valida y persiste un nuevo propietario en la base de datos.
+### Base Models
 
-```java
-public String processFindForm(int page, Owner owner, BindingResult result, Model model)
-```
-Busca propietarios por apellido con soporte para paginación (5 registros por página).
+#### BaseEntity
 
-```java
-public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, int ownerId)
-```
-Actualiza los datos de un propietario existente.
+Base domain object with an ID property.
 
-```java
-public ModelAndView showOwner(int ownerId)
-```
-Retorna los detalles completos de un propietario con sus mascotas asociadas.
+**Package:** `org.springframework.samples.petclinic.model`
 
-#### Diagrama de Secuencia - Creación de Propietario
+**Annotations:** `@MappedSuperclass`
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant Browser
-    participant OwnerController
-    participant OwnerRepository
-    participant Database
-    
-    User->>Browser: Accede a /owners/new
-    Browser->>OwnerController: GET /owners/new
-    OwnerController->>Browser: Retorna formulario vacío
-    
-    User->>Browser: Completa datos y envía
-    Browser->>OwnerController: POST /owners/new (Owner)
-    OwnerController->>OwnerController: Valida datos
-    
-    alt Validación exitosa
-        OwnerController->>OwnerRepository: save(owner)
-        OwnerRepository->>Database: INSERT owner
-        Database-->>OwnerRepository: OK
-        OwnerRepository-->>OwnerController: Owner guardado
-        OwnerController-->>Browser: Redirect /owners/\{ownerId\}
-    else Errores de validación
-        OwnerController-->>Browser: Retorna formulario con errores
-    end
-```
+**Properties:**
+- `id: Integer` - Entity identifier (auto-generated)
 
-#### Diagrama de Secuencia - Búsqueda de Propietarios
+**Methods:**
+- `Integer getId()` - Get entity ID
+- `void setId(Integer id)` - Set entity ID
+- `boolean isNew()` - Check if entity is new (id == null)
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant Browser
-    participant OwnerController
-    participant OwnerRepository
-    participant Database
-    
-    User->>Browser: Accede a /owners/find
-    Browser->>OwnerController: GET /owners/find
-    OwnerController-->>Browser: Retorna formulario de búsqueda
-    
-    User->>Browser: Ingresa apellido y página
-    Browser->>OwnerController: GET /owners?page=1&lastName=Smith
-    OwnerController->>OwnerRepository: findByLastName("Smith", pageable)
-    OwnerRepository->>Database: SELECT * FROM owners WHERE lastName LIKE 'Smith%'
-    Database-->>OwnerRepository: Resultados paginados
-    OwnerRepository-->>OwnerController: Page<Owner>
-    
-    alt 0 resultados
-        OwnerController-->>Browser: Retorna mensaje "not found"
-    else 1 resultado
-        OwnerController-->>Browser: Redirect /owners/\{ownerId\}
-    else Múltiples resultados
-        OwnerController-->>Browser: Retorna lista con paginación
-    end
-```
+**Implementation:** Implements `Serializable`
 
-#### Diagrama de Secuencia - Edición de Propietario
+---
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant Browser
-    participant OwnerController
-    participant OwnerRepository
-    participant Database
-    
-    User->>Browser: Accede a /owners/\{ownerId\}/edit
-    Browser->>OwnerController: GET /owners/\{ownerId\}/edit
-    OwnerController->>OwnerRepository: findById(ownerId)
-    OwnerRepository->>Database: SELECT * FROM owners WHERE id = ?
-    Database-->>OwnerRepository: Owner data
-    OwnerRepository-->>OwnerController: Owner object
-    OwnerController-->>Browser: Retorna formulario prellenado
-    
-    User->>Browser: Modifica datos y envía
-    Browser->>OwnerController: POST /owners/\{ownerId\}/edit (Owner)
-    OwnerController->>OwnerController: Valida datos
-    
-    alt Validación exitosa
-        OwnerController->>OwnerRepository: save(owner)
-        OwnerRepository->>Database: UPDATE owners
-        Database-->>OwnerRepository: OK
-        OwnerRepository-->>OwnerController: Owner actualizado
-        OwnerController-->>Browser: Redirect /owners/\{ownerId\}
-    else Errores de validación
-        OwnerController-->>Browser: Retorna formulario con errores
-    end
-```
+#### NamedEntity
+
+Extends `BaseEntity` with a name property.
+
+**Package:** `org.springframework.samples.petclinic.model`
+
+**Annotations:** `@MappedSuperclass`
+
+**Properties:**
+- `name: String` - Entity name (database column: "name")
+
+**Methods:**
+- `String getName()` - Get name
+- `void setName(String name)` - Set name
+- `String toString()` - Returns the name
+
+---
+
+#### Person
+
+Abstract person domain object extending `BaseEntity`.
+
+**Package:** `org.springframework.samples.petclinic.model`
+
+**Annotations:** `@MappedSuperclass`
+
+**Properties:**
+- `firstName: String` - First name (required, database column: "first_name")
+- `lastName: String` - Last name (required, database column: "last_name")
+- `customerDocumentId: String` - Customer document ID
+- `gender: String` - Gender
+
+**Methods:**
+- `String getFirstName()` / `void setFirstName(String firstName)`
+- `String getLastName()` / `void setLastName(String lastName)`
+- `String getCustomerDocumentId()` / `void setCustomerDocumentId(String customerDocumentId)`
+
+---
+
+### Owner Module
+
+#### Owner
+
+Represents a pet owner in the clinic system.
+
+**Package:** `org.springframework.samples.petclinic.owner`
+
+**Extends:** `Person`
+
+**Annotations:** `@Entity`, `@Table(name = "owners")`
+
+**Properties:**
+- `address: String` - Owner's address (required)
+- `city: String` - Owner's city (required)
+- `telephone: String` - Owner's telephone (required, max 10 digits)
+- `pets: List<Pet>` - List of owner's pets (cascade all, eager loading)
+
+**Methods:**
+- `String getAddress()` / `void setAddress(String address)`
+- `String getCity()` / `void setCity(String city)`
+- `String getTelephone()` / `void setTelephone(String telephone)`
+- `List<Pet> getPets()` - Get all pets
+- `void addPet(Pet pet)` - Add a new pet
+- `Pet getPet(String name)` - Find pet by name
+- `Pet getPet(Integer id)` - Find pet by ID
+- `Pet getPet(String name, boolean ignoreNew)` - Find pet by name with option to ignore new pets
+- `Owner addVisit(Integer petId, Visit visit)` - Add a visit to a pet
+
+---
+
+#### Pet
+
+Represents a pet owned by an owner.
+
+**Package:** `org.springframework.samples.petclinic.owner`
+
+**Extends:** `NamedEntity`
+
+**Annotations:** `@Entity`, `@Table(name = "pets")`
+
+**Properties:**
+- `birthDate: LocalDate` - Pet's birth date (format: "yyyy-MM-dd")
+- `type: PetType` - Pet type (e.g., dog, cat)
+- `visits: Set<Visit>` - Pet's visit history (cascade all, eager loading)
+
+**Methods:**
+- `LocalDate getBirthDate()` / `void setBirthDate(LocalDate birthDate)`
+- `PetType getType()` / `void setType(PetType type)`
+- `Collection<Visit> getVisits()` - Get visit history
+- `void addVisit(Visit visit)` - Add a new visit
+
+---
+
+#### PetType
+
+Enumeration of pet types (dog, cat, hamster, etc.).
+
+**Package:** `org.springframework.samples.petclinic.owner`
+
+**Extends:** `NamedEntity`
+
+**Annotations:** `@Entity`, `@Table(name = "types")`
+
+**Description:** Entity representing different types of pets that can be registered in the clinic.
+
+---
+
+#### Visit
+
+Represents a visit to the clinic by a pet.
+
+**Package:** `org.springframework.samples.petclinic.owner`
+
+**Extends:** `BaseEntity`
+
+**Annotations:** `@Entity`, `@Table(name = "visits")`
+
+**Properties:**
+- `date: LocalDate` - Visit date (format: "yyyy-MM-dd", defaults to current date)
+- `description: String` - Visit description (required)
+
+**Methods:**
+- `LocalDate getDate()` / `void setDate(LocalDate date)`
+- `String getDescription()` / `void setDescription(String description)`
+
+**Constructor:** `Visit()` - Initializes date to current date
+
+---
+
+### Veterinarian Module
+
+#### Vet
+
+Represents a veterinarian in the clinic.
+
+**Package:** `org.springframework.samples.petclinic.vet`
+
+**Extends:** `Person`
+
+**Annotations:** `@Entity`, `@Table(name = "vets")`
+
+**Properties:**
+- `specialties: Set<Specialty>` - Vet's specialties (eager loading via join table)
+
+**Methods:**
+- `List<Specialty> getSpecialties()` - Get sorted list of specialties
+- `int getNrOfSpecialties()` - Get number of specialties
+- `void addSpecialty(Specialty specialty)` - Add a specialty
+
+---
+
+#### Specialty
+
+Represents a veterinary specialty (e.g., dentistry, surgery).
+
+**Package:** `org.springframework.samples.petclinic.vet`
+
+**Extends:** `NamedEntity`
+
+**Annotations:** `@Entity`, `@Table(name = "specialties")`
+
+---
+
+#### Vets
+
+Wrapper class for XML/JSON marshalling of veterinarian lists.
+
+**Package:** `org.springframework.samples.petclinic.vet`
+
+**Annotations:** `@XmlRootElement`
+
+**Properties:**
+- `vets: List<Vet>` - List of veterinarians
+
+**Methods:**
+- `List<Vet> getVetList()` - Get or initialize veterinarian list
+
+---
+
+## Repository Interfaces
 
 ### OwnerRepository
 
-Interfaz de acceso a datos para la entidad Owner.
+Data access layer for Owner entities.
 
-#### Métodos
+**Package:** `org.springframework.samples.petclinic.owner`
 
-```java
-List<PetType> findPetTypes()
+**Extends:** `Repository<Owner, Integer>`
+
+**Methods:**
+
+#### findPetTypes()
 ```
-Retorna todos los tipos de mascotas ordenados por nombre.
-
-```java
-Page<Owner> findByLastName(String lastName, Pageable pageable)
+@Query("SELECT ptype FROM PetType ptype ORDER BY ptype.name")
+@Transactional(readOnly = true)
+List&lt;PetType&gt; findPetTypes()
 ```
-Busca propietarios cuyo apellido comience con el valor especificado. Soporta paginación.
+Retrieve all PetTypes ordered by name.
 
-```java
+#### findByLastName(String lastName, Pageable pageable)
+```
+@Query("SELECT DISTINCT owner FROM Owner owner left join owner.pets WHERE owner.lastName LIKE :lastName%")
+@Transactional(readOnly = true)
+Page&lt;Owner&gt; findByLastName(String lastName, Pageable pageable)
+```
+Find owners by last name (starts with). Supports pagination.
+
+**Parameters:**
+- `lastName`: Value to search for
+- `pageable`: Pagination information
+
+#### findById(Integer id)
+```
+@Query("SELECT owner FROM Owner owner left join fetch owner.pets WHERE owner.id = :id")
+@Transactional(readOnly = true)
 Owner findById(Integer id)
 ```
-Obtiene un propietario por ID con todas sus mascotas asociadas (FETCH eager).
+Retrieve an owner by ID with eager-loaded pets.
 
-```java
+#### save(Owner owner)
+```
 void save(Owner owner)
 ```
-Persiste un propietario nuevo o actualiza uno existente.
+Save or update an owner.
 
-```java
-Page<Owner> findAll(Pageable pageable)
+#### findAll(Pageable pageable)
 ```
-Retorna todos los propietarios con soporte para paginación.
+@Query("SELECT owner FROM Owner owner")
+@Transactional(readOnly = true)
+Page&lt;Owner&gt; findAll(Pageable pageable)
+```
+Retrieve all owners with pagination support.
 
 ---
 
-## Pet Module
+### VetRepository
+
+Data access layer for Vet entities.
+
+**Package:** `org.springframework.samples.petclinic.vet`
+
+**Extends:** `Repository<Vet, Integer>`
+
+**Methods:**
+
+#### findAll()
+```
+@Transactional(readOnly = true)
+@Cacheable("vets")
+Collection&lt;Vet&gt; findAll() throws DataAccessException
+```
+Retrieve all veterinarians. Results are cached.
+
+#### findAll(Pageable pageable)
+```
+@Transactional(readOnly = true)
+@Cacheable("vets")
+Page&lt;Vet&gt; findAll(Pageable pageable) throws DataAccessException
+```
+Retrieve all veterinarians with pagination support. Results are cached.
+
+---
+
+## Controllers
+
+### OwnerController
+
+Handles owner management operations.
+
+**Package:** `org.springframework.samples.petclinic.owner`
+
+**Annotations:** `@Controller`
+
+**Base Routes:** All owner-related endpoints
+
+#### Endpoints:
+
+##### GET /owners/new
+```
+public String initCreationForm(Map&lt;String, Object&gt; model)
+```
+Display owner creation form.
+
+##### POST /owners/new
+```
+public String processCreationForm(@Valid Owner owner, BindingResult result)
+```
+Process new owner creation.
+
+##### GET /owners/find
+```
+public String initFindForm(Map&lt;String, Object&gt; model)
+```
+Display owner search form.
+
+##### GET /owners
+```
+public String processFindForm(@RequestParam(defaultValue = "1") int page, Owner owner, 
+                              BindingResult result, Model model)
+```
+Search owners by last name with pagination (page size: 5).
+
+**Parameters:**
+- `page`: Page number (defaults to 1)
+- `owner`: Owner object with search criteria
+
+##### GET /owners/{ownerId}
+```
+public ModelAndView showOwner(@PathVariable("ownerId") int ownerId)
+```
+Display owner details.
+
+##### GET /owners/{ownerId}/edit
+```
+public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model)
+```
+Display owner edit form.
+
+##### POST /owners/{ownerId}/edit
+```
+public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, 
+                                     @PathVariable("ownerId") int ownerId)
+```
+Process owner update.
+
+---
 
 ### PetController
 
-Controlador para la gestión de mascotas asociadas a propietarios.
+Handles pet management operations.
 
-#### Endpoints
+**Package:** `org.springframework.samples.petclinic.owner`
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/owners/{ownerId}/pets/new` | Inicializa formulario de creación de mascota |
-| POST | `/owners/{ownerId}/pets/new` | Procesa creación de mascota |
-| GET | `/owners/{ownerId}/pets/{petId}/edit` | Inicializa formulario de edición |
-| POST | `/owners/{ownerId}/pets/{petId}/edit` | Procesa actualización de mascota |
+**Annotations:** `@Controller`, `@RequestMapping("/owners/{ownerId}")`
 
-#### Métodos Principales
+#### Endpoints:
 
-```java
-public Collection<PetType> populatePetTypes()
+##### GET /owners/{ownerId}/pets/new
 ```
-Retorna todos los tipos de mascotas disponibles para seleccionar en formularios.
-
-```java
-public Owner findOwner(int ownerId)
-```
-Carga el propietario asociado a la mascota.
-
-```java
-public Pet findPet(int ownerId, Integer petId)
-```
-Carga la mascota específica o crea una nueva si no existe.
-
-```java
 public String initCreationForm(Owner owner, ModelMap model)
 ```
-Inicializa el formulario para crear una nueva mascota bajo un propietario.
+Display pet creation form.
 
-```java
+##### POST /owners/{ownerId}/pets/new
+```
 public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, ModelMap model)
 ```
-Valida que no exista una mascota con el mismo nombre y persiste la nueva mascota.
+Process new pet creation. Validates that pet name is unique for owner.
 
-```java
-public String initUpdateForm(Owner owner, int petId, ModelMap model)
+##### GET /owners/{ownerId}/pets/{petId}/edit
 ```
-Carga los datos de una mascota existente para edición.
+public String initUpdateForm(Owner owner, @PathVariable("petId") int petId, ModelMap model)
+```
+Display pet edit form.
 
-```java
+##### POST /owners/{ownerId}/pets/{petId}/edit
+```
 public String processUpdateForm(@Valid Pet pet, BindingResult result, Owner owner, ModelMap model)
 ```
-Actualiza los datos de una mascota existente.
-
-#### Diagrama de Secuencia - Creación de Mascota
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Browser
-    participant PetController
-    participant OwnerRepository
-    participant Database
-    
-    User->>Browser: Accede a /owners/\{ownerId\}/pets/new
-    Browser->>PetController: GET /owners/\{ownerId\}/pets/new
-    PetController->>OwnerRepository: findById(ownerId)
-    OwnerRepository->>Database: SELECT * FROM owners WHERE id = ?
-    Database-->>OwnerRepository: Owner data
-    OwnerRepository-->>PetController: Owner object
-    PetController->>OwnerRepository: findPetTypes()
-    OwnerRepository->>Database: SELECT ptype FROM PetType ORDER BY name
-    Database-->>OwnerRepository: Pet types
-    OwnerRepository-->>PetController: Collection<PetType>
-    PetController-->>Browser: Retorna formulario con tipos disponibles
-    
-    User->>Browser: Completa datos (nombre, tipo, fecha nacimiento)
-    Browser->>PetController: POST /owners/\{ownerId\}/pets/new (Pet)
-    PetController->>PetController: Valida: sin duplicados por nombre
-    
-    alt Pet válida
-        PetController->>OwnerRepository: save(owner)
-        OwnerRepository->>Database: INSERT pet + UPDATE owner
-        Database-->>OwnerRepository: OK
-        OwnerRepository-->>PetController: Owner actualizado
-        PetController-->>Browser: Redirect /owners/\{ownerId\}
-    else Pet duplicada o inválida
-        PetController-->>Browser: Retorna formulario con errores
-    end
-```
-
-#### Diagrama de Secuencia - Edición de Mascota
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Browser
-    participant PetController
-    participant OwnerRepository
-    participant Database
-    
-    User->>Browser: Accede a /owners/\{ownerId\}/pets/\{petId\}/edit
-    Browser->>PetController: GET /owners/\{ownerId\}/pets/\{petId\}/edit
-    PetController->>OwnerRepository: findById(ownerId)
-    OwnerRepository->>Database: SELECT * FROM owners WHERE id = ?
-    Database-->>OwnerRepository: Owner data
-    OwnerRepository-->>PetController: Owner object
-    PetController->>PetController: Obtiene pet: owner.getPet(petId)
-    PetController-->>Browser: Retorna formulario prellenado
-    
-    User->>Browser: Modifica datos
-    Browser->>PetController: POST /owners/\{ownerId\}/pets/\{petId\}/edit (Pet)
-    PetController->>PetController: Valida datos
-    
-    alt Validación exitosa
-        PetController->>OwnerRepository: save(owner)
-        OwnerRepository->>Database: UPDATE pet
-        Database-->>OwnerRepository: OK
-        OwnerRepository-->>PetController: Owner actualizado
-        PetController-->>Browser: Redirect /owners/\{ownerId\}
-    else Errores de validación
-        PetController-->>Browser: Retorna formulario con errores
-    end
-```
+Process pet update.
 
 ---
-
-## Visit Module
 
 ### VisitController
 
-Controlador para la gestión de citas veterinarias.
+Handles visit management operations.
 
-#### Endpoints
+**Package:** `org.springframework.samples.petclinic.owner`
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/owners/{ownerId}/pets/{petId}/visits/new` | Inicializa formulario de creación de cita |
-| POST | `/owners/{ownerId}/pets/{petId}/visits/new` | Procesa creación de cita |
+**Annotations:** `@Controller`
 
-#### Métodos Principales
+#### Endpoints:
 
-```java
-public Visit loadPetWithVisit(int ownerId, int petId, Map<String, Object> model)
+##### GET /owners/{ownerId}/pets/{petId}/visits/new
 ```
-Carga el propietario y mascota, crea una nueva cita y la asocia a la mascota. Se ejecuta antes de cada solicitud.
-
-```java
-public String initNewVisitForm(int petId, Map<String, Object> model)
+public String initNewVisitForm(@PathVariable("petId") int petId, Map&lt;String, Object&gt; model)
 ```
-Inicializa el formulario para crear una nueva cita.
+Display visit creation form.
 
-```java
-public String processNewVisitForm(@ModelAttribute Owner owner, int petId, @Valid Visit visit, BindingResult result)
+##### POST /owners/{ownerId}/pets/{petId}/visits/new
 ```
-Valida y persiste una nueva cita asociándola a la mascota y propietario.
-
-#### Diagrama de Secuencia - Creación de Cita Veterinaria
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Browser
-    participant VisitController
-    participant OwnerRepository
-    participant Database
-    
-    User->>Browser: Accede a /owners/\{ownerId\}/pets/\{petId\}/visits/new
-    Browser->>VisitController: GET /owners/\{ownerId\}/pets/\{petId\}/visits/new
-    
-    Note over VisitController: @ModelAttribute loadPetWithVisit
-    VisitController->>OwnerRepository: findById(ownerId)
-    OwnerRepository->>Database: SELECT * FROM owners WHERE id = ?
-    Database-->>OwnerRepository: Owner data
-    OwnerRepository-->>VisitController: Owner object
-    VisitController->>VisitController: owner.getPet(petId)
-    VisitController->>VisitController: Crea Visit vacía
-    VisitController->>VisitController: pet.addVisit(visit)
-    
-    VisitController-->>Browser: Retorna formulario de cita vacío
-    
-    User->>Browser: Ingresa fecha y descripción de la cita
-    Browser->>VisitController: POST /owners/\{ownerId\}/pets/\{petId\}/visits/new (Visit)
-    
-    Note over VisitController: @ModelAttribute loadPetWithVisit (nuevamente)
-    VisitController->>VisitController: Valida Visit
-    
-    alt Validación exitosa
-        VisitController->>OwnerRepository: owner.addVisit(petId, visit)
-        VisitController->>OwnerRepository: save(owner)
-        OwnerRepository->>Database: INSERT visit + UPDATE owner
-        Database-->>OwnerRepository: OK
-        OwnerRepository-->>VisitController: Owner actualizado
-        VisitController-->>Browser: Redirect /owners/\{ownerId\}
-    else Errores de validación
-        VisitController-->>Browser: Retorna formulario con errores
-    end
+public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, 
+                                  @Valid Visit visit, BindingResult result)
 ```
+Process new visit creation.
 
 ---
-
-## Vet Module
 
 ### VetController
 
-Controlador para la visualización de veterinarios registrados.
+Handles veterinarian display operations.
 
-#### Endpoints
+**Package:** `org.springframework.samples.petclinic.vet`
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/vets.html` | Retorna lista paginada de veterinarios (HTML) |
-| GET | `/vets` | Retorna lista completa de veterinarios (JSON/XML) |
+**Annotations:** `@Controller`
 
-#### Métodos Principales
+#### Endpoints:
 
-```java
-public String showVetList(int page, Model model)
+##### GET /vets.html
 ```
-Retorna lista paginada de veterinarios (5 por página) con detalles de paginación para renderizar HTML.
+public String showVetList(@RequestParam(defaultValue = "1") int page, Model model)
+```
+Display paginated veterinarian list as HTML (page size: 5).
 
-```java
+##### GET /vets
+```
+@ResponseBody
 public Vets showResourcesVetList()
 ```
-Retorna lista completa de veterinarios en formato JSON/XML para acceso API.
-
-### VetRepository
-
-Interfaz de acceso a datos para la entidad Vet.
-
-#### Métodos
-
-```java
-Collection<Vet> findAll()
-```
-Retorna todos los veterinarios. Resultado cacheado en "vets".
-
-```java
-Page<Vet> findAll(Pageable pageable)
-```
-Retorna todos los veterinarios con soporte para paginación. Resultado cacheado en "vets".
-
-#### Diagrama de Secuencia - Obtención de Lista de Veterinarios (HTML)
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Browser
-    participant VetController
-    participant VetRepository
-    participant Cache
-    participant Database
-    
-    User->>Browser: Accede a /vets.html?page=1
-    Browser->>VetController: GET /vets.html
-    VetController->>VetRepository: findAll(pageable)
-    
-    alt Cache hit
-        VetRepository->>Cache: Obtiene de caché "vets"
-        Cache-->>VetRepository: Lista de veterinarios
-    else Cache miss
-        VetRepository->>Database: SELECT * FROM vets LIMIT 5 OFFSET 0
-        Database-->>VetRepository: Vet data
-        VetRepository->>Cache: Almacena en caché "vets"
-    end
-    
-    VetRepository-->>VetController: Page<Vet>
-    VetController->>VetController: Mapea a modelo (página, total, items)
-    VetController-->>Browser: Retorna vetList.html con datos
-    Browser-->>User: Muestra lista paginada de veterinarios
-```
-
-#### Diagrama de Secuencia - Obtención de Lista de Veterinarios (JSON)
-
-```mermaid
-sequenceDiagram
-    participant Client
-    participant Browser
-    participant VetController
-    participant VetRepository
-    participant Cache
-    participant Database
-    
-    Client->>Browser: GET /vets (Accept: application/json)
-    Browser->>VetController: Solicita lista de veterinarios
-    VetController->>VetRepository: findAll()
-    
-    alt Cache hit
-        VetRepository->>Cache: Obtiene de caché "vets"
-        Cache-->>VetRepository: Lista completa de veterinarios
-    else Cache miss
-        VetRepository->>Database: SELECT * FROM vets
-        Database-->>VetRepository: Todos los Vet records
-        VetRepository->>Cache: Almacena en caché "vets"
-    end
-    
-    VetRepository-->>VetController: Collection<Vet>
-    VetController->>VetController: Mapea a objeto Vets
-    VetController-->>Browser: Retorna JSON
-    Browser-->>Client: \{ "vets": [...] \}
-```
+Return all veterinarians as JSON/XML resource.
 
 ---
-
-## System Module
 
 ### WelcomeController
 
-Controlador simple para la página de inicio.
+Application welcome page controller.
 
-#### Endpoints
+**Package:** `org.springframework.samples.petclinic.system`
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/` | Retorna página de bienvenida |
+**Annotations:** `@Controller`
 
-#### Métodos
+#### Endpoints:
 
-```java
+##### GET /
+```
 public String welcome()
 ```
-Retorna la vista "welcome" para mostrar la página de inicio de la aplicación.
+Display application welcome page.
+
+---
 
 ### CrashController
 
-Controlador de demostración para manejo de excepciones.
+Exception handling demonstration controller.
 
-#### Endpoints
+**Package:** `org.springframework.samples.petclinic.system`
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/oups` | Lanza una excepción para demostrar manejo de errores |
+**Annotations:** `@Controller`
 
-#### Métodos
+#### Endpoints:
 
-```java
-public String triggerException()
+##### GET /oups
 ```
-Lanza un RuntimeException para demostrar cómo la aplicación maneja excepciones no capturadas.
-
----
-
-## Modelos de Datos
-
-### Owner (Propietario)
-
-Entidad que representa al propietario de una mascota.
-
-**Campos principales:**
-- `id`: Identificador único
-- `firstName`: Nombre del propietario
-- `lastName`: Apellido del propietario
-- `address`: Dirección
-- `city`: Ciudad
-- `telephone`: Teléfono
-- `pets`: Colección de mascotas asociadas
-
-### Pet (Mascota)
-
-Entidad que representa una mascota.
-
-**Campos principales:**
-- `id`: Identificador único
-- `name`: Nombre de la mascota
-- `birthDate`: Fecha de nacimiento
-- `type`: Tipo de mascota (PetType)
-- `owner`: Propietario asociado
-- `visits`: Colección de citas veterinarias
-
-### Visit (Cita Veterinaria)
-
-Entidad que representa una cita veterinaria.
-
-**Campos principales:**
-- `id`: Identificador único
-- `visitDate`: Fecha de la cita
-- `description`: Descripción del motivo de la cita
-- `pet`: Mascota asociada
-
-### Vet (Veterinario)
-
-Entidad que representa un veterinario.
-
-**Campos principales:**
-- `id`: Identificador único
-- `firstName`: Nombre
-- `lastName`: Apellido
-- `specialties`: Colección de especialidades
-
-### PetType (Tipo de Mascota)
-
-Entidad que define los tipos de mascotas disponibles.
-
-**Campos principales:**
-- `id`: Identificador único
-- `name`: Nombre del tipo (ej: Dog, Cat, Bird)
-
----
-
-## Configuración de Paginación
-
-Todos los listados paginados utilizan un tamaño de página de **5 registros** por defecto.
-
-**Parámetro de consulta:**
-- `page`: Número de página (1-indexed)
-
-**Ejemplo:**
+public String triggerException() throws RuntimeException
 ```
-GET /owners?page=2&lastName=Smith
-GET /vets.html?page=1
-```
+Demonstrates exception handling by throwing a runtime exception.
 
 ---
 
-## Estrategias de Caché
+## Utilities
 
-### VetRepository
+### PetValidator
 
-Las consultas `findAll()` son cacheadas con la clave `"vets"`:
+Custom validator for Pet domain objects.
 
-```java
-@Cacheable("vets")
-Collection<Vet> findAll()
+**Package:** `org.springframework.samples.petclinic.owner`
 
-@Cacheable("vets")
-Page<Vet> findAll(Pageable pageable)
-```
+**Implements:** `Validator`
 
-El caché se invalida cuando:
-- Se actualiza la lista de veterinarios
-- El servidor se reinicia
+**Validation Rules:**
+- Pet name is required
+- Pet type is required for new pets
+- Birth date is required
 
----
-
-## Manejo de Validación
-
-La aplicación utiliza **JSR-380 (Bean Validation)** con anotación `@Valid`:
-
-1. **Owner**: Validación de campos requeridos
-2. **Pet**: Validación de nombre (no duplicado), tipo y fecha
-3. **Visit**: Validación de fecha y descripción
-
-Los errores de validación se retornan al formulario con mensajes localizados.
+**Methods:**
+- `void validate(Object obj, Errors errors)` - Validate pet object
+- `boolean supports(Class<?> clazz)` - Returns true only for Pet class
 
 ---
 
-## Flujo de Solicitud-Respuesta Típico
+### PetTypeFormatter
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant Browser
-    participant Controller
-    participant Repository
-    participant Database
-    participant View
-    
-    User->>Browser: Interactúa con la aplicación
-    Browser->>Controller: Envía solicitud HTTP
-    Controller->>Repository: Solicita datos
-    Repository->>Database: Consulta SQL
-    Database-->>Repository: Retorna datos
-    Repository-->>Controller: Retorna objetos del modelo
-    Controller->>Controller: Valida y procesa datos
-    Controller->>View: Prepara modelo de vista
-    View-->>Browser: Renderiza HTML
-    Browser-->>User: Muestra respuesta
-```
+Spring formatter for PetType conversion.
+
+**Package:** `org.springframework.samples.petclinic.owner`
+
+**Annotations:** `@Component`
+
+**Implements:** `Formatter<PetType>`
+
+**Methods:**
+- `String print(PetType petType, Locale locale)` - Convert PetType to string (returns name)
+- `PetType parse(String text, Locale locale)` - Parse string to PetType
 
 ---
 
-## Notas Técnicas
+### CacheConfiguration
 
-- **Framework**: Spring MVC
-- **Persistencia**: Spring Data JPA
-- **Validación**: JSR-380 Bean Validation
-- **Transacciones**: @Transactional en métodos read-only
-- **Caché**: Spring Cache abstraction
-- **Binding**: WebDataBinder con campos permitidos/prohibidos
+Application caching configuration.
+
+**Package:** `org.springframework.samples.petclinic.system`
+
+**Annotations:** `@Configuration(proxyBeanMethods = false)`, `@EnableCaching`
+
+**Features:**
+- Enables application-wide caching via JCache API
+- Caches veterinarian data with statistics enabled
+- Cache name: "vets"
+
+**Methods:**
+- `JCacheManagerCustomizer petclinicCacheConfigurationCustomizer()` - Configure cache for vets
+
+---
+
+### PetClinicApplication
+
+Main Spring Boot application entry point.
+
+**Package:** `org.springframework.samples.petclinic`
+
+**Annotations:** `@SpringBootApplication`
+
+**Methods:**
+- `static void main(String[] args)` - Application entry point that runs Spring Boot application
+
+---
+
+## Data Validation
+
+The application uses both JPA annotations and custom validators:
+
+### JPA Annotations
+- `@NotEmpty` - Required string fields (firstName, lastName, address, city, telephone, visit description)
+- `@Digits` - Telephone validation (10 digit maximum)
+
+### Custom Validation
+- `PetValidator` - Ensures pet name, type, and birth date are provided
+- Duplicate pet name detection per owner
+
+---
+
+## Database Schema
+
+### Tables
+
+| Table | Entity | Primary Key |
+|-------|--------|-------------|
+| owners | Owner | id |
+| pets | Pet | id |
+| types | PetType | id |
+| visits | Visit | id |
+| vets | Vet | id |
+| specialties | Specialty | id |
+| vet_specialties | (Join Table) | vet_id, specialty_id |
+
+### Relationships
+
+- **Owner → Pet:** One-to-Many (cascade all)
+- **Pet → PetType:** Many-to-One
+- **Pet → Visit:** One-to-Many (cascade all)
+- **Vet → Specialty:** Many-to-Many
+
+---
+
+## Error Handling
+
+- Validation errors are returned to the form with rejection values
+- Owner not found returns rejection message on last name field
+- Invalid pet type throws ParseException
+- Exception handling demonstrated via `/oups` endpoint
 ```
 
