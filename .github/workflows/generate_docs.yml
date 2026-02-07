@@ -41,7 +41,7 @@ jobs:
           # Esto nos dirá si el token está presente (debería imprimir '81' o similar, no el token)
           echo "Longitud del token: ${#COPILOT_GITHUB_TOKEN}"
 
-      # 5. GENERACIÓN DE CONTENIDO CON DIAGRAMAS MERMAID
+# 5. GENERACIÓN CON IA + LIMPIEZA MDX SEGURA
       - name: Generate AI Content
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.PAT_FOR_DOCS }}
@@ -49,30 +49,37 @@ jobs:
         run: |
           mkdir -p ./docs-repo/docs
           
-          echo "Generando arquitectura con diagrama de flujo..."
-          # Pedimos un diagrama de arquitectura C4 o Flowchart
-          copilot -p "Analiza ./source-code. Genera arquitectura.md con Frontmatter (id: arquitectura). Incluye un diagrama Mermaid tipo 'graph TD' que muestre la relación entre Controllers, Services y Repositories. Explica el flujo de datos. Responde solo con Markdown puro compatible con Docusaurus 3." > ./docs-repo/docs/arquitectura.md
+          echo "Generando arquitectura con diagramas..."
+          copilot -p "Genera arquitectura.md para Docusaurus de ./source-code. Incluye un diagrama Mermaid 'graph TD' del flujo Controller-Service-Repo. Responde solo Markdown puro." > ./docs-repo/docs/arquitectura.md
       
-          echo "Generando referencia de API con Diagramas de Secuencia..."
-          # Pedimos diagramas de secuencia para los endpoints más importantes
-          copilot -p "Analiza ./source-code/src/main/java. Genera api.md con Frontmatter (id: api). Para cada controlador principal, incluye un diagrama Mermaid de tipo 'sequenceDiagram' que ilustre el camino de una petición HTTP desde el Controller hasta la DB. Usa backticks para variables. Responde solo con Markdown puro." > ./docs-repo/docs/api.md
+          echo "Generando API con diagramas de secuencia..."
+          copilot -p "Genera api.md para Docusaurus de ./source-code/src/main/java. Incluye diagramas Mermaid 'sequenceDiagram'. Responde solo Markdown puro." > ./docs-repo/docs/api.md
 
-          # --- LIMPIEZA SEGURA PARA MDX ---
-          # Solo escapamos llaves si NO están dentro de bloques de código (donde vive Mermaid)
-          # Usamos un comando de Python rápido para no romper los diagramas Mermaid
-          python3 -c "
+          echo "Ejecutando script de limpieza MDX..."
+          # Usamos un Heredoc (<< 'EOF') para evitar problemas de comillas en Bash
+          python3 << 'EOF'
           import os, re
-          for f in ['./docs-repo/docs/arquitectura.md', './docs-repo/docs/api.md']:
-              if os.path.exists(f):
-                  with open(f, 'r') as file:
-                      content = file.read()
-                  # Esta regex protege los bloques de código y escapa llaves solo en el texto
-                  # (Simpliación para evitar ReferenceErrors en MDX)
-                  clean = re.sub(r'(?<!`){(?!`)', '\{', content)
-                  clean = re.sub(r'(?<!`)}', '\}', clean)
-                  with open(f, 'w') as file:
-                      file.write(clean)
-          "
+          files = ['./docs-repo/docs/arquitectura.md', './docs-repo/docs/api.md']
+          for file_path in files:
+              if os.path.exists(file_path):
+                  with open(file_path, 'r', encoding='utf-8') as f:
+                      content = f.read()
+                  
+                  # Escapamos llaves que NO estén dentro de bloques de código (```)
+                  # Esto evita el ReferenceError en Docusaurus/MDX
+                  def escape_braces(match):
+                      block = match.group(0)
+                      if block.startswith('```'):
+                          return block # No tocar bloques de código
+                      # Escapar llaves fuera de bloques
+                      return block.replace('{', '\{').replace('}', '\}')
+
+                  # Regex que separa bloques de código del resto del texto
+                  clean_content = re.sub(r'(```.*?```|[^`]+)', escape_braces, content, flags=re.DOTALL)
+                  
+                  with open(file_path, 'w', encoding='utf-8') as f:
+                      f.write(clean_content)
+          EOF
           
       # 6. Guardar los archivos generados
       - name: Commit and Push AI Docs
